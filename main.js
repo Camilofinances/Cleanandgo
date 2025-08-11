@@ -89,7 +89,7 @@
   async function loadAndInit() {
     // Antes tenías: import content from '../content.json' …
     // Ahora cargamos el JSON vía fetch y RUTA RELATIVA:
-    const res = await fetch('contenido.json');
+    const res = await fetch('content.json');
     content = await res.json();
 
     setupLang();
