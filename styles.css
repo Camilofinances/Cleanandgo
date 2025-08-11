@@ -21,3 +21,8 @@
 .footer-grid{display:flex;gap:24px;justify-content:space-between;align-items:flex-start}
 .three-canvas{position:absolute;right:0;top:0;width:60%;height:100%;pointer-events:none;z-index:10}
 @media (max-width:720px){.three-canvas{display:none}.panel{padding:22px}.hero h1{font-size:36px}.gallery img{height:160px}.horiz-container{flex-direction:column}.panel{min-width:100%;height:auto;overflow:visible}.horiz-wrapper{height:auto;overflow:visible}}
+/* 3D canvas height */
+#canvas-wrap {
+  height: 40vh;      /* ~40% de la pantalla */
+  min-height: 280px; /* asegura algo visible en móvil */
+}
