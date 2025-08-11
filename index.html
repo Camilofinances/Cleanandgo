@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Clean&Go! — Spark. Shine.</title>
 
-  <!-- CSS en la RAÍZ -->
+  <!-- CSS en la raíz -->
   <link rel="stylesheet" href="styles.css" />
 
   <!-- Librerías externas -->
@@ -15,7 +15,7 @@
 </head>
 <body>
   <header class="site-header">
-    <img src="logo.svg" class="logo" alt="Clean&Go!">
+    <img src="logo.svg" class="logo" alt="Clean&Go!" />
     <div class="controls">
       <label class="switch">
         <input id="langToggle" type="checkbox" />
@@ -82,18 +82,10 @@
           <h2>Contact</h2>
           <form name="contact" method="POST" data-netlify="true" netlify-honeypot="bot-field">
             <input type="hidden" name="form-name" value="contact" />
-            <p class="hidden">
-              <label>No completar: <input name="bot-field" /></label>
-            </p>
-            <label>Name / Nombre
-              <input name="name" required />
-            </label>
-            <label>Email
-              <input name="email" type="email" required />
-            </label>
-            <label>Message / Mensaje
-              <textarea name="message" rows="5" required></textarea>
-            </label>
+            <p class="hidden"><label>No completar: <input name="bot-field" /></label></p>
+            <label>Name / Nombre <input name="name" required /></label>
+            <label>Email <input name="email" type="email" required /></label>
+            <label>Message / Mensaje <textarea name="message" rows="5" required></textarea></label>
             <div class="recaptcha" data-netlify-recaptcha="true"></div>
             <button class="btn primary" type="submit">Send</button>
             <div id="formStatus" role="status" aria-live="polite"></div>
@@ -119,7 +111,7 @@
     </div>
   </main>
 
-  <!-- JS en la RAÍZ -->
+  <!-- JS en la raíz (este orden) -->
   <script src="three-scene.js"></script>
   <script src="main.js"></script>
 </body>
