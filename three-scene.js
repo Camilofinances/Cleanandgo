@@ -1,57 +1,38 @@
-window.initThree = function() {
-  console.log("initThree ejecutado");
+// three-scene.js — escena final (plano ondulado + burbujas), robusta en móvil/desktop
+window.initThree = function () {
+  try {
+    if (typeof THREE === 'undefined') throw new Error('THREE no cargó');
 
-  const wrap = document.getElementById("canvas-wrap");
-  if (!wrap) {
-    console.error("❌ No se encontró #canvas-wrap");
-    mostrarError("3D error: #canvas-wrap no existe");
-    return;
-  }
+    const wrap = document.getElementById('canvas-wrap');
+    if (!wrap) throw new Error('#canvas-wrap no existe');
 
-  // Crear el renderer
-  const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-  renderer.setSize(wrap.clientWidth, wrap.clientHeight);
-  wrap.appendChild(renderer.domElement);
+    // Asegurar altura visible por si el CSS falla
+    if ((wrap.clientHeight || 0) < 150) {
+      wrap.style.display = 'block';
+      wrap.style.minHeight = '320px';
+      wrap.style.height = '40vh';
+    }
 
-  // Crear la escena
-  const scene = new THREE.Scene();
+    const W = wrap.clientWidth || innerWidth * 0.9;
+    const H = wrap.clientHeight || Math.max(innerHeight * 0.4, 320);
 
-  // Cámara
-  const camera = new THREE.PerspectiveCamera(50, wrap.clientWidth / wrap.clientHeight, 0.1, 1000);
-  camera.position.z = 5;
+    // Render/cámara/escena
+    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+    renderer.setSize(W, H);
+    renderer.setPixelRatio(Math.min(devicePixelRatio || 1, 2));
+    wrap.innerHTML = ''; // limpia si ya había algo (del diagnóstico)
+    wrap.appendChild(renderer.domElement);
 
-  // Luz
-  const light = new THREE.AmbientLight(0xffffff, 1);
-  scene.add(light);
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(45, W / H, 0.1, 100);
+    camera.position.set(0, 0.2, 4.2);
 
-  // Cubo de prueba
-  const geometry = new THREE.BoxGeometry();
-  const material = new THREE.MeshStandardMaterial({ color: 0x29648e });
-  const cube = new THREE.Mesh(geometry, material);
-  scene.add(cube);
+    // Luces
+    scene.add(new THREE.HemisphereLight(0xffffff, 0x9fc8e8, 1.2));
+    const dir = new THREE.DirectionalLight(0xffffff, 0.6);
+    dir.position.set(2, 3, 4);
+    scene.add(dir);
 
-  // Animación
-  function animate() {
-    requestAnimationFrame(animate);
-    cube.rotation.x += 0.01;
-    cube.rotation.y += 0.01;
-    renderer.render(scene, camera);
-  }
-  animate();
-
-  console.log("✅ Escena 3D inicializada");
-};
-
-function mostrarError(msg) {
-  const div = document.createElement("div");
-  div.textContent = msg;
-  div.style.position = "fixed";
-  div.style.bottom = "10px";
-  div.style.left = "10px";
-  div.style.background = "red";
-  div.style.color = "white";
-  div.style.padding = "8px";
-  div.style.zIndex = "9999";
-  div.style.fontSize = "14px";
-  document.body.appendChild(div);
-}
+    // Plano ondulado
+    const geo = new THREE.PlaneGeometry(4, 2.2, 80, 40);
+    const mat = new THREE
