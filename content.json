@@ -1,1 +1,115 @@
-{"brand":{"name":"Clean&Go!","slogan":{"en":"Spark. Shine.","es":"Brilla. Listo."},"email":"camilo.hire@gmail.com","phone":"+34 611 608 146","address":"Sotogrande, Cádiz","hours":"Lun–Dom 08:00–20:00"},"services":[{"en":"General Cleaning — Daily & deep cleaning for homes","es":"Limpieza General — Limpieza diaria y profunda para hogares"},{"en":"Kitchen Deep Clean — Ovens, hoods and counters spotless","es":"Cocina a fondo — Hornos, campanas y encimeras impecables"},{"en":"Bathroom Sanitation — Showers, tubs and tiles like new","es":"Higiene de baños — Duchas, bañeras y azulejos como nuevos"},{"en":"Glass & Mirrors — Streak-free finishes","es":"Cristales y espejos — Sin marcas"},{"en":"Move-in/Move-out — Quick and thorough turnovers","es":"Entrada/Salida — Entregas rápidas y completas"},{"en":"After-Event Cleaning — Fast cleanup after parties","es":"Post-evento — Limpieza rápida tras eventos"}],"testimonials":[{"name":"María","city":"Cádiz","es":"Excelente servicio: mi baño nunca había brillado tanto.","en":"Excellent service: my bathroom has never shone so much."},{"name":"John","city":"Madrid","es":"Profesional y rápido. Muy recomendable.","en":"Professional and fast. Highly recommend."},{"name":"Lucía","city":"Sevilla","es":"Llegaron puntuales y todo quedó perfecto.","en":"They arrived on time and everything was perfect."},{"name":"Miguel","city":"Cádiz","es":"Mi horno parece nuevo — ¡increíble trabajo!","en":"My oven looks new — amazing job!"},{"name":"Ana","city":"Marbella","es":"Amables y detallistas. Volveré a contratar.","en":"Friendly and detail-oriented. Will hire again."},{"name":"Sara","city":"Granada","es":"Buen precio para la calidad que ofrecen.","en":"Good price for the quality they offer."},{"name":"Tom","city":"Barcelona","es":"Rápido, limpio, sin complicaciones. Me encantó.","en":"Quick, clean, no fuss. Loved it."},{"name":"Elena","city":"Málaga","es":"Trabajan con productos eco. Muy contenta.","en":"They use eco products. Very happy."},{"name":"Carlos","city":"Cádiz","es":"Perfecto para limpiezas puntuales.","en":"Perfect for one-off deep cleans."},{"name":"Laura","city":"Valencia","es":"Muy profesionales y cuidadosos con muebles.","en":"Very professional and careful with furniture."}],"stock":["https://images.unsplash.com/photo-1602143407151-7111542de6e8?q=80&w=1600&auto=format&fit=crop","https://images.unsplash.com/photo-1581579188871-45ea61f2a0c8?q=80&w=1600&auto=format&fit=crop","https://images.unsplash.com/photo-1584626400940-4ba158d09cdf?q=80&w=1600&auto=format&fit=crop","https://images.unsplash.com/photo-1598300184825-52b4b89b70b3?q=80&w=1600&auto=format&fit=crop","https://images.unsplash.com/photo-1581574209460-2b4b93a2c418?q=80&w=1600&auto=format&fit=crop","https://images.unsplash.com/photo-1527515637462-cff94eecc1ac?q=80&w=1600&auto=format&fit=crop","https://images.unsplash.com/photo-1600585154526-990dced4db0d?q=80&w=1600&auto=format&fit=crop","https://images.unsplash.com/photo-1556911220-e15b29be8c87?q=80&w=1600&auto=format&fit=crop","https://images.unsplash.com/photo-1598300053651-0a99839f3d19?q=80&w=1600&auto=format&fit=crop","https://images.unsplash.com/photo-1600585154510-7c182ed7b731?q=80&w=1600&auto=format&fit=crop","https://images.unsplash.com/photo-1560185008-b033106af2f2?q=80&w=1600&auto=format&fit=crop","https://images.unsplash.com/photo-1552321554-5fefe8c9ef14?q=80&w=1600&auto=format&fit=crop"]}
+{
+  "brand": {
+    "name": "Clean&Go!",
+    "slogan": {
+      "en": "Spark. Shine.",
+      "es": "Brilla. Listo."
+    },
+    "email": "camilo.hire@gmail.com",
+    "phone": "+34 611 608 146",
+    "address": "Sotogrande, Cádiz",
+    "hours": "Lun–Dom 08:00–20:00"
+  },
+  "services": [
+    {
+      "en": "General Cleaning — Daily & deep cleaning for homes",
+      "es": "Limpieza General — Limpieza diaria y profunda para hogares"
+    },
+    {
+      "en": "Kitchen Deep Clean — Ovens, hoods and counters spotless",
+      "es": "Cocina a fondo — Hornos, campanas y encimeras impecables"
+    },
+    {
+      "en": "Bathroom Sanitation — Showers, tubs and tiles like new",
+      "es": "Higiene de baños — Duchas, bañeras y azulejos como nuevos"
+    },
+    {
+      "en": "Glass & Mirrors — Streak-free finishes",
+      "es": "Cristales y espejos — Sin marcas"
+    },
+    {
+      "en": "Move-in/Move-out — Quick and thorough turnovers",
+      "es": "Entrada/Salida — Entregas rápidas y completas"
+    },
+    {
+      "en": "After-Event Cleaning — Fast cleanup after parties",
+      "es": "Post-evento — Limpieza rápida tras eventos"
+    }
+  ],
+  "testimonials": [
+    {
+      "name": "María",
+      "city": "Cádiz",
+      "es": "Excelente servicio: mi baño nunca había brillado tanto.",
+      "en": "Excellent service: my bathroom has never shone so much."
+    },
+    {
+      "name": "John",
+      "city": "Madrid",
+      "es": "Profesional y rápido. Muy recomendable.",
+      "en": "Professional and fast. Highly recommend."
+    },
+    {
+      "name": "Lucía",
+      "city": "Sevilla",
+      "es": "Llegaron puntuales y todo quedó perfecto.",
+      "en": "They arrived on time and everything was perfect."
+    },
+    {
+      "name": "Miguel",
+      "city": "Cádiz",
+      "es": "Mi horno parece nuevo — ¡increíble trabajo!",
+      "en": "My oven looks new — amazing job!"
+    },
+    {
+      "name": "Ana",
+      "city": "Marbella",
+      "es": "Amables y detallistas. Volveré a contratar.",
+      "en": "Friendly and detail-oriented. Will hire again."
+    },
+    {
+      "name": "Sara",
+      "city": "Granada",
+      "es": "Buen precio para la calidad que ofrecen.",
+      "en": "Good price for the quality they offer."
+    },
+    {
+      "name": "Tom",
+      "city": "Barcelona",
+      "es": "Rápido, limpio, sin complicaciones. Me encantó.",
+      "en": "Quick, clean, no fuss. Loved it."
+    },
+    {
+      "name": "Elena",
+      "city": "Málaga",
+      "es": "Trabajan con productos eco. Muy contenta.",
+      "en": "They use eco products. Very happy."
+    },
+    {
+      "name": "Carlos",
+      "city": "Cádiz",
+      "es": "Perfecto para limpiezas puntuales.",
+      "en": "Perfect for one-off deep cleans."
+    },
+    {
+      "name": "Laura",
+      "city": "Valencia",
+      "es": "Muy profesionales y cuidadosos con muebles.",
+      "en": "Very professional and careful with furniture."
+    }
+  ],
+  "stock": [
+    "https://images.unsplash.com/photo-1602143407151-7111542de6e8?q=80&w=1600&auto=format&fit=crop",
+    "https://images.unsplash.com/photo-1581579188871-45ea61f2a0c8?q=80&w=1600&auto=format&fit=crop",
+    "https://images.unsplash.com/photo-1584626400940-4ba158d09cdf?q=80&w=1600&auto=format&fit=crop",
+    "https://images.unsplash.com/photo-1598300184825-52b4b89b70b3?q=80&w=1600&auto=format&fit=crop",
+    "https://images.unsplash.com/photo-1581574209460-2b4b93a2c418?q=80&w=1600&auto=format&fit=crop",
+    "https://images.unsplash.com/photo-1527515637462-cff94eecc1ac?q=80&w=1600&auto=format&fit=crop",
+    "https://images.unsplash.com/photo-1600585154526-990dced4db0d?q=80&w=1600&auto=format&fit=crop",
+    "https://images.unsplash.com/photo-1556911220-e15b29be8c87?q=80&w=1600&auto=format&fit=crop",
+    "https://images.unsplash.com/photo-1598300053651-0a99839f3d19?q=80&w=1600&auto=format&fit=crop",
+    "https://images.unsplash.com/photo-1600585154510-7c182ed7b731?q=80&w=1600&auto=format&fit=crop",
+    "https://images.unsplash.com/photo-1560185008-b033106af2f2?q=80&w=1600&auto=format&fit=crop",
+    "https://images.unsplash.com/photo-1552321554-5fefe8c9ef14?q=80&w=1600&auto=format&fit=crop"
+  ]
+}
