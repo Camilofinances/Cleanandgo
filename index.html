@@ -5,15 +5,17 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Clean&Go! — Spark. Shine.</title>
 
-  <!-- CSS en la raíz -->
   <link rel="stylesheet" href="styles.css" />
 
-  <!-- Librerías externas -->
+  <!-- Librerías -->
   <script src="https://unpkg.com/three@0.154.0/build/three.min.js"></script>
   <script src="https://unpkg.com/gsap@3.12.5/dist/gsap.min.js"></script>
   <script src="https://unpkg.com/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
 </head>
 <body>
+  <!-- Canvas 3D de fondo (full-screen) -->
+  <div id="canvas-wrap" class="three-canvas"></div>
+
   <header class="site-header">
     <img src="logo.svg" class="logo" alt="Clean&Go!" />
     <div class="controls">
@@ -37,7 +39,6 @@
             <a class="btn ghost" href="#portfolio">Portfolio</a>
           </div>
         </div>
-        <div id="canvas-wrap" class="three-canvas"></div>
       </section>
 
       <section class="panel services">
@@ -111,7 +112,7 @@
     </div>
   </main>
 
-  <!-- JS en la raíz (este orden) -->
+  <!-- Orden correcto -->
   <script src="three-scene.js"></script>
   <script src="main.js"></script>
 </body>
