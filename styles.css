@@ -59,3 +59,22 @@ body{font-family:Inter,system-ui,Arial,sans-serif;background:#fff;color:var(--te
   .hero h1{font-size:36px}
   .gallery img{height:160px}
 }
+/* Imagen de Identidad en el hero (nuevo) */
+.identidad {
+  position: absolute;   /* se posiciona dentro del hero */
+  top: 20px;            /* mueve hacia abajo desde arriba del hero */
+  left: 20px;           /* mueve desde la izquierda */
+  width: 140px;         /* tamaño del logo */
+  height: auto;
+  z-index: 2;           /* por delante del canvas de burbujas */
+  pointer-events: none; /* no bloquea clics a botones cercanos */
+}
+
+/* Ajuste responsive */
+@media (max-width: 720px) {
+  .identidad {
+    width: 100px;
+    top: 10px;
+    left: 10px;
+  }
+}
