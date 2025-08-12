@@ -2,18 +2,23 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Clean&Go!</title>
-  <link rel="stylesheet" href="styles.css?v=5">
+
+  <!-- Estilos -->
+  <link rel="stylesheet" href="styles.css?v=6">
 </head>
 <body>
 
-  <!-- Header -->
+  <!-- Canvas 3D de fondo (llena toda la pantalla) -->
+  <div id="bg3d" class="three-canvas" aria-hidden="true"></div>
+
+  <!-- Header fijo -->
   <header class="site-header">
     <div class="logo-container">
       <picture>
-        <source srcset="logo.svg?v=5" type="image/svg+xml">
-        <img src="logo.svg?v=5" class="logo" alt="Clean&Go! Logo">
+        <source srcset="logo.svg?v=6" type="image/svg+xml">
+        <img src="logo.svg?v=6" class="logo" alt="Clean&Go!">
       </picture>
       <span class="site-title">Clean&Go!</span>
     </div>
@@ -36,8 +41,8 @@
     </div>
   </section>
 
-  <!-- Services -->
-  <section class="services">
+  <!-- Services (ejemplo) -->
+  <section class="services" id="services">
     <h2>Services</h2>
     <div class="service-card">
       <h3>General Cleaning</h3>
@@ -53,8 +58,10 @@
     </div>
   </section>
 
-  <script src="main.js?v=5"></script>
-  <script src="three-scene.js?v=5"></script>
-
+  <!-- Scripts: primero Three.js, luego la escena -->
+  <script src="https://cdn.jsdelivr.net/npm/three@0.158.0/build/three.min.js"></script>
+  <script src="three-scene.js?v=6"></script>
+  <!-- Tu JS de contenido, si lo usas -->
+  <script src="main.js?v=6"></script>
 </body>
 </html>
