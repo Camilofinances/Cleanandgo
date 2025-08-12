@@ -1,157 +1,146 @@
-// Fregona + cubo/escurridor con burbujas en fondo full-screen
-window.initThree = function () {
-  try {
-    if (typeof THREE === 'undefined') throw new Error('THREE no cargó');
+// three-scene.js — Fondo de burbujas en toda la pantalla
+(function () {
+  // Si Three.js no cargó, salimos silenciosamente
+  if (typeof THREE === 'undefined') return;
 
-    const wrap = document.getElementById('canvas-wrap');
-    if (!wrap) throw new Error('#canvas-wrap no existe');
+  const container = document.getElementById('bg3d');
+  if (!container) return;
 
-    // renderer a pantalla completa (fondo)
-    const W = innerWidth, H = innerHeight;
-    const renderer = new THREE.WebGLRenderer({ antialias:true, alpha:true });
-    renderer.setSize(W, H);
-    renderer.setPixelRatio(Math.min(devicePixelRatio || 1, 2));
-    wrap.innerHTML = '';
-    wrap.appendChild(renderer.domElement);
+  // Renderer
+  const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+  renderer.setSize(window.innerWidth, window.innerHeight);
+  container.innerHTML = '';
+  container.appendChild(renderer.domElement);
 
-    // escena / cámara
-    const scene = new THREE.Scene();
-    scene.fog = new THREE.Fog(0xf4f6f8, 3, 9);
-    const camera = new THREE.PerspectiveCamera(45, W/H, 0.1, 100);
-    camera.position.set(0.4, 0.6, 4.2);
+  // Escena y cámara
+  const scene = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 100);
+  camera.position.set(0, 0, 6);
 
-    // luces
-    scene.add(new THREE.HemisphereLight(0xffffff, 0x9fc8e8, 1.2));
-    const dir = new THREE.DirectionalLight(0xffffff, 0.75);
-    dir.position.set(2, 3, 4);
-    scene.add(dir);
+  // Luces suaves (estilo “limpio”)
+  scene.add(new THREE.HemisphereLight(0xffffff, 0xdfe9f3, 1.15));
+  const dir = new THREE.DirectionalLight(0xffffff, 0.6);
+  dir.position.set(2, 3, 4);
+  scene.add(dir);
 
-    // base/“sombra”
-    const ground = new THREE.Mesh(
-      new THREE.CircleGeometry(2.8, 64),
-      new THREE.MeshStandardMaterial({ color:0xeff3f7, roughness:0.95, metalness:0, transparent:true, opacity:0.8 })
+  // Parámetros de burbujas
+  const MAX_POOL = 32;       // máximo en pool
+  const TARGET_ACTIVE = 10;  // visibles simultáneamente
+  const ACTIVE = new Set();
+
+  // Geometría y material compartidos (performance)
+  const bubbleGeo = new THREE.SphereGeometry(1, 24, 24);
+  const bubbleMat = new THREE.MeshPhysicalMaterial({
+    color: 0x9fd6ff,      // azul celeste
+    metalness: 0.0,
+    roughness: 0.15,
+    transmission: 0.75,   // “vidrio” (si no lo soporta, cae en transparente)
+    transparent: true,
+    opacity: 0.9,
+    thickness: 0.5,
+    clearcoat: 0.6,
+    clearcoatRoughness: 0.2
+  });
+
+  // Pool
+  const pool = [];
+  for (let i = 0; i < MAX_POOL; i++) {
+    const m = new THREE.Mesh(bubbleGeo, bubbleMat);
+    m.visible = false;
+    // Propiedades custom
+    m.__data = {
+      vx: 0, vy: 0, vz: 0,
+      life: 0, maxLife: 0,
+      baseScale: 1,
+      wobble: Math.random() * Math.PI * 2
+    };
+    scene.add(m);
+    pool.push(m);
+  }
+
+  // Spawner
+  function spawnBubble() {
+    const m = pool.find(b => !b.visible);
+    if (!m) return;
+
+    // Posición inicial (repartido por toda la pantalla, un poco por detrás)
+    m.position.set(
+      THREE.MathUtils.randFloatSpread(8),     // x ~[-4,4]
+      THREE.MathUtils.randFloat(-3.5, -1.0),  // y bajo
+      THREE.MathUtils.randFloat(-1.5, 0.5)    // z
     );
-    ground.rotation.x = -Math.PI/2; ground.position.y = -0.8;
-    scene.add(ground);
 
-    // ======== CUBO + ESCURRIDOR =========
-    const brandBlue = 0x29648e, steel = 0xd9dee5;
-    const bucket = new THREE.Group();
-    const outer = new THREE.Mesh(
-      new THREE.CylinderGeometry(0.75, 0.9, 0.9, 64, 1, false),
-      new THREE.MeshStandardMaterial({ color:brandBlue, roughness:0.45, metalness:0.25 })
-    );
-    const lip = new THREE.Mesh(
-      new THREE.TorusGeometry(0.48, 0.03, 16, 64),
-      new THREE.MeshStandardMaterial({ color:0x2d7bb0, roughness:0.5, metalness:0.25 })
-    );
-    lip.rotation.x = Math.PI/2; lip.position.y = 0.45;
-    const wring = new THREE.Mesh(
-      new THREE.CylinderGeometry(0.55, 0.55, 0.12, 40, 1, true),
-      new THREE.MeshStandardMaterial({ color:steel, roughness:0.3, metalness:0.7, side:THREE.DoubleSide })
-    );
-    wring.position.y = 0.46;
-    const handleArc = new THREE.Mesh(
-      new THREE.TorusGeometry(0.55, 0.02, 12, 64, Math.PI),
-      new THREE.MeshStandardMaterial({ color:steel, roughness:0.35, metalness:0.85 })
-    );
-    handleArc.rotation.z = Math.PI; handleArc.position.y = 0.25;
-    bucket.add(outer, lip, wring, handleArc);
-    bucket.position.set(-0.7, -0.35, 0); bucket.rotation.y = -0.25;
-    scene.add(bucket);
+    // Velocidades
+    const d = m.__data;
+    d.vx = THREE.MathUtils.randFloatSpread(0.12); // leve deriva horizontal
+    d.vy = THREE.MathUtils.randFloat(0.35, 0.8);  // ascenso
+    d.vz = THREE.MathUtils.randFloatSpread(0.04);
 
-    // ======== FREGONA =========
-    const mop = new THREE.Group();
-    const stick = new THREE.Mesh(
-      new THREE.CylinderGeometry(0.05, 0.05, 1.8, 16),
-      new THREE.MeshStandardMaterial({ color:0x8b5e3c, roughness:0.7 })
-    );
-    stick.position.y = 0.2;
-    const headCap = new THREE.Mesh(
-      new THREE.CylinderGeometry(0.13, 0.16, 0.12, 24),
-      new THREE.MeshStandardMaterial({ color:brandBlue, roughness:0.45, metalness:0.2 })
-    );
-    headCap.position.y = -0.75;
-    const strands = new THREE.Group();
-    const strandMat = new THREE.MeshStandardMaterial({ color:0xffffff, roughness:0.85, metalness:0.05 });
-    for (let i=0;i<18;i++){
-      const s = new THREE.Mesh(new THREE.CapsuleGeometry(0.02, 0.6, 2, 8), strandMat);
-      s.position.set(Math.cos(i/18*Math.PI*2)*0.12, -1.05, Math.sin(i/18*Math.PI*2)*0.12);
-      s.rotation.x = 0.25 + Math.random()*0.25;
-      strands.add(s);
-    }
-    mop.add(stick, headCap, strands);
-    mop.position.set(0.6, -0.1, 0);
-    mop.rotation.z = -0.25; mop.rotation.y = 0.3;
-    scene.add(mop);
+    // Tamaño
+    d.baseScale = THREE.MathUtils.randFloat(0.25, 0.6);
+    m.scale.setScalar(d.baseScale);
 
-    // ======== BURBUJAS EN PROFUNDIDAD (fondo inmersivo) ========
-    const bubbles = new THREE.Group(); scene.add(bubbles);
-    const bubbleCount = Math.round((innerWidth * innerHeight) / 15000);
-    const bubbleMatBase = new THREE.MeshStandardMaterial({ color:0x9fc8e8, transparent:true, opacity:0.5, roughness:0.2, metalness:0.1 });
+    // Vida
+    d.life = 0;
+    d.maxLife = THREE.MathUtils.randFloat(6, 12); // seg
 
-    for (let i=0;i<bubbleCount;i++){
-      const r = 0.015 + Math.random()*0.07;
-      const mat = bubbleMatBase.clone(); mat.opacity = 0.25 + Math.random()*0.5;
-      const b = new THREE.Mesh(new THREE.SphereGeometry(r, 16, 16), mat);
-      b.position.set((Math.random()-0.5)*10, -2 + Math.random()*4, -2.5 + Math.random()*2.5);
-      b.userData.speed = 0.004 + Math.random()*0.01;
-      bubbles.add(b);
-    }
+    m.visible = true;
+    ACTIVE.add(m);
+  }
 
-    // interacciones
-    let tx=0, ty=0;
-    addEventListener('pointermove', e=>{
-      tx = (e.clientX/innerWidth - .5) * .5;
-      ty = (e.clientY/innerHeight - .5) * .35;
-    }, {passive:true});
+  // Mantener siempre ~10 activas
+  function ensureActive() {
+    while (ACTIVE.size < TARGET_ACTIVE) spawnBubble();
+  }
 
-    if (window.gsap && window.ScrollTrigger){
-      gsap.registerPlugin(ScrollTrigger);
-      gsap.to(camera.position, {
-        z: 4.8,
-        scrollTrigger:{
-          trigger: document.body,
-          start: "top top",
-          end: "bottom bottom",
-          scrub: 1
-        }
-      });
-    }
+  // Animación
+  const clock = new THREE.Clock();
+  function tick() {
+    requestAnimationFrame(tick);
+    const dt = Math.min(clock.getDelta(), 0.033); // cap 30 FPS delta
 
-    function anim(t){
-      requestAnimationFrame(anim);
+    // Animar activas
+    ACTIVE.forEach(m => {
+      const d = m.__data;
 
-      bubbles.children.forEach(s=>{
-        s.position.y += s.userData.speed;
-        if (s.position.y > 2) s.position.y = -2;
-      });
+      // Movimiento
+      m.position.x += d.vx * dt;
+      m.position.y += d.vy * dt;
+      m.position.z += d.vz * dt;
 
-      const k = t*0.0012;
-      bucket.position.y = -0.35 + Math.sin(k)*0.02;
-      mop.position.y = -0.1 + Math.cos(k*1.1)*0.02;
+      // Wobble/respiración
+      d.wobble += dt * 2;
+      const s = d.baseScale * (1 + Math.sin(d.wobble) * 0.06);
+      m.scale.setScalar(s);
 
-      camera.position.x += (tx - camera.position.x)*0.06;
-      camera.position.y += (ty - camera.position.y)*0.06;
+      // Desvanecer al final de la vida
+      d.life += dt;
+      const t = d.life / d.maxLife;
+      const fade = t < 0.1 ? t / 0.1 : (t > 0.85 ? (1 - t) / 0.15 : 1);
+      m.material.opacity = 0.9 * Math.max(0, Math.min(1, fade));
 
-      renderer.render(scene, camera);
-    }
-    anim(0);
-
-    addEventListener('resize', ()=>{
-      const w2 = innerWidth, h2 = innerHeight;
-      renderer.setSize(w2, h2);
-      camera.aspect = w2 / h2;
-      camera.updateProjectionMatrix();
+      // Reciclar: si sale por arriba/tiempo agotado/fuera lateral
+      if (m.position.y > 4.2 || d.life >= d.maxLife || Math.abs(m.position.x) > 6) {
+        m.visible = false;
+        ACTIVE.delete(m);
+      }
     });
 
-  } catch (e) {
-    const box = document.createElement('div');
-    box.style.cssText = 'position:fixed;bottom:10px;left:10px;background:#fff;padding:8px 10px;border:1px solid #ddd;border-radius:8px;color:#c00;font:12px/1.2 system-ui;z-index:99999';
-    box.textContent = '3D error: ' + e.message;
-    document.body.appendChild(box);
+    ensureActive();
+    renderer.render(scene, camera);
   }
-};
 
-// auto‑arranque
-window.initThree && window.initThree();
+  // Resize
+  function onResize() {
+    const w = window.innerWidth;
+    const h = window.innerHeight;
+    renderer.setSize(w, h);
+    camera.aspect = w / h;
+    camera.updateProjectionMatrix();
+  }
+  window.addEventListener('resize', onResize, { passive: true });
+  onResize();
+  ensureActive();
+  tick();
+})();
