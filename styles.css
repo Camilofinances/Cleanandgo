@@ -1,182 +1,142 @@
-/* Reset básico */
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
+/* =========================
+   Clean&Go! — styles.css
+   ========================= */
+
+/* --------- Reset básico --------- */
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; }
+img, svg { display: block; max-width: 100%; }
+
+/* Evita scroll lateral en móvil */
+html, body { overflow-x: hidden; }
+
+/* --------- Paleta --------- */
+:root{
+  --brand:#0a4d73;        /* azul principal */
+  --brand-2:#1f6d95;      /* azul botones */
+  --accent:#9fd6ff;       /* celeste burbujas */
+  --text:#102027;         /* texto principal */
+  --muted:#6c7a86;        /* texto secundario */
+  --card:#ffffff;         /* tarjetas */
+  --shadow: 0 6px 24px rgba(16,32,39,.08);
 }
 
-body {
-  font-family: Arial, sans-serif;
-  background-color: #f8f9fa;
-  color: #333;
-  line-height: 1.6;
+/* --------- Base --------- */
+body{
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  color: var(--text);
+  line-height: 1.55;
+  background: linear-gradient(180deg,#f3f8fb 0%,#eef4f9 40%,#e9f1f7 100%);
 }
 
-/* Header */
-.site-header {
-  height: 64px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0 16px;
+/* Para espaciados globales */
+section{ padding: clamp(24px, 4vw, 48px) 16px; }
+.container{ max-width: 1080px; margin: 0 auto; }
+
+/* --------- Canvas 3D de fondo --------- */
+.three-canvas{
   position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  background: white;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
-  z-index: 1000;
+  inset: 0;                 /* top/right/bottom/left: 0 */
+  z-index: 0;               /* por detrás del contenido */
+  pointer-events: none;     /* no bloquea clics ni scroll */
 }
 
-.logo-container {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
+/* El contenido va por encima del 3D */
+.site-header, .hero, .services, .buttons, .service-card { position: relative; z-index: 1; }
 
-.logo {
-  height: 40px;
-  width: auto;
+/* --------- Header fijo --------- */
+.site-header{
+  height: 64px;
+  position: fixed; top: 0; left: 0; right: 0;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 16px;
+  background: #fff;
+  box-shadow: 0 2px 8px rgba(16,32,39,.04);
+  z-index: 5;
 }
+.logo-container{ display: flex; align-items: center; gap: 10px; }
+.logo{ height: 40px; width: auto; }
+.site-title{ font-weight: 700; color: var(--brand); }
 
-.site-title {
-  font-size: 1.2rem;
-  font-weight: bold;
-  color: #0a4d73;
+/* Controles idioma */
+.controls{ display: flex; align-items: center; gap: 8px; }
+.lang-label{ font-size: .9rem; color: var(--brand); }
+
+/* Switch */
+.switch{ position: relative; width: 46px; height: 26px; display: inline-block; }
+.switch input{ opacity: 0; width: 0; height: 0; }
+.slider{
+  position: absolute; inset: 0; cursor: pointer;
+  background: #cbd5e1; border-radius: 999px; transition: .25s;
 }
-
-.controls {
-  display: flex;
-  align-items: center;
-  gap: 8px;
+.slider:before{
+  content:""; position: absolute; height: 22px; width: 22px; left: 2px; top: 2px;
+  background:#fff; border-radius: 50%; transition: transform .25s;
 }
+.switch input:checked + .slider{ background: var(--brand); }
+.switch input:checked + .slider:before{ transform: translateX(20px); }
 
-.lang-label {
-  font-size: 0.9rem;
-  color: #0a4d73;
-}
-
-/* Interruptor */
-.switch {
-  position: relative;
-  display: inline-block;
-  width: 42px;
-  height: 22px;
-}
-
-.switch input {
-  opacity: 0;
-  width: 0;
-  height: 0;
-}
-
-.slider {
-  position: absolute;
-  cursor: pointer;
-  top: 0; left: 0;
-  right: 0; bottom: 0;
-  background-color: #ccc;
-  transition: .4s;
-  border-radius: 22px;
-}
-
-.slider:before {
-  position: absolute;
-  content: "";
-  height: 18px;
-  width: 18px;
-  left: 2px;
-  bottom: 2px;
-  background-color: white;
-  transition: .4s;
-  border-radius: 50%;
-}
-
-input:checked + .slider {
-  background-color: #0a4d73;
-}
-
-input:checked + .slider:before {
-  transform: translateX(20px);
-}
-
-/* Hero */
-.hero {
-  padding-top: calc(64px + 24px);
+/* --------- Hero --------- */
+.hero{
+  /* deja espacio bajo el header fijo */
+  padding-top: calc(64px + clamp(16px, 3vw, 32px));
   text-align: center;
 }
-
-.hero h1 {
-  font-size: 2.2rem;
-  color: #0a4d73;
+.hero h1{
+  font-size: clamp(2.2rem, 4.5vw, 3.4rem);
+  color: var(--brand);
+  letter-spacing: .3px;
 }
-
-.hero p {
-  margin: 8px 0 16px;
-  font-size: 1.1rem;
-  color: #555;
+.hero p{
+  margin-top: 8px;
+  font-size: clamp(1rem, 2.5vw, 1.25rem);
+  color: var(--muted);
 }
 
 /* Botones */
-.buttons {
-  display: flex;
-  justify-content: center;
-  gap: 12px;
-}
-
-.btn {
-  padding: 8px 16px;
-  border-radius: 6px;
+.buttons{ display: flex; justify-content: center; gap: 12px; margin-top: 16px; }
+.btn{
+  display: inline-block;
+  padding: 10px 18px;
+  border-radius: 12px;
   text-decoration: none;
-  font-size: 1rem;
+  font-weight: 600;
+  border: 1px solid transparent;
+  transition: transform .08s ease, box-shadow .2s ease, background .2s ease, color .2s ease;
 }
+.btn:active{ transform: translateY(1px); }
+.btn-primary{ background: var(--brand-2); color: #fff; box-shadow: var(--shadow); }
+.btn-primary:hover{ filter: brightness(1.05); }
+.btn-secondary{ background:#fff; color: var(--brand); border-color:#cbd5e1; }
+.btn-secondary:hover{ background:#f7fbff; }
 
-.btn-primary {
-  background: #0a4d73;
-  color: white;
+/* --------- Services --------- */
+.services{ text-align: center; }
+.services h2{
+  font-size: clamp(1.4rem, 3.3vw, 2rem);
+  margin-bottom: 18px; color: var(--brand);
 }
-
-.btn-secondary {
-  background: white;
-  border: 1px solid #0a4d73;
-  color: #0a4d73;
-}
-
-/* Services */
-.services {
-  padding: 40px 16px;
-  text-align: center;
-}
-
-.services h2 {
-  margin-bottom: 20px;
-  font-size: 1.6rem;
-  color: #0a4d73;
-}
-
-.service-card {
-  background: white;
-  border-radius: 10px;
-  padding: 16px;
+.service-card{
+  background: var(--card);
+  max-width: 760px;
   margin: 10px auto;
-  max-width: 350px;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+  padding: 18px 20px;
+  border-radius: 16px;
+  box-shadow: var(--shadow);
+  text-align: left;
 }
+.service-card h3{ color: var(--brand); margin-bottom: 6px; font-size: 1.25rem; }
+.service-card p{ color: var(--muted); }
 
-.service-card h3 {
-  color: #0a4d73;
-  margin-bottom: 8px;
-}
+/* --------- Utilidades --------- */
+.hide{ display: none !important; }
 
-/* Responsive */
-@media (max-width: 720px) {
-  .hero {
-    padding-top: calc(64px + 16px + env(safe-area-inset-top));
-  }
-  .logo {
-    height: 32px;
-  }
-  .site-title {
-    font-size: 1rem;
-  }
+/* --------- Responsive --------- */
+@media (max-width: 720px){
+  .logo{ height: 34px; }
+  .site-title{ font-size: 1rem; }
+  .hero{ padding-left: 12px; padding-right: 12px; }
+  .service-card{ border-radius: 14px; }
+  /* iOS safe area debajo del notch */
+  .hero{ padding-top: calc(64px + 16px + env(safe-area-inset-top)); }
 }
