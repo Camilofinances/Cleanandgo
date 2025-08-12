@@ -1,30 +1,28 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Clean&Go!</title>
-
-  <!-- Estilos -->
-  <link rel="stylesheet" href="styles.css?v=6">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Clean&Go! — Spark. Shine.</title>
+  <link rel="stylesheet" href="styles.css?v=7" />
 </head>
 <body>
 
-  <!-- Canvas 3D de fondo (llena toda la pantalla) -->
+  <!-- Fondo 3D a pantalla completa -->
   <div id="bg3d" class="three-canvas" aria-hidden="true"></div>
 
   <!-- Header fijo -->
   <header class="site-header">
     <div class="logo-container">
       <picture>
-        <source srcset="logo.svg?v=6" type="image/svg+xml">
-        <img src="logo.svg?v=6" class="logo" alt="Clean&Go!">
+        <source srcset="logo.svg?v=7" type="image/svg+xml">
+        <img src="logo.svg?v=7" class="logo" alt="Clean&Go!">
       </picture>
       <span class="site-title">Clean&Go!</span>
     </div>
     <div class="controls">
       <label class="switch">
-        <input type="checkbox" id="lang-switch">
+        <input type="checkbox" id="lang-switch" />
         <span class="slider"></span>
       </label>
       <span class="lang-label">ES / EN</span>
@@ -41,27 +39,45 @@
     </div>
   </section>
 
-  <!-- Services (ejemplo) -->
+  <!-- Services -->
   <section class="services" id="services">
     <h2>Services</h2>
+    <div class="service-card"><h3>General Cleaning</h3><p>Daily & deep cleaning for homes</p></div>
+    <div class="service-card"><h3>Kitchen Deep Clean</h3><p>Ovens, hoods and counters spotless</p></div>
+    <div class="service-card"><h3>Bathroom Sanitation</h3><p>Showers, tubs and tiles like new</p></div>
+  </section>
+
+  <!-- Portfolio -->
+  <section id="portfolio" class="services">
+    <h2>Portfolio</h2>
+    <div class="service-card"><p>Gallery coming soon…</p></div>
+  </section>
+
+  <!-- Testimonials -->
+  <section class="services">
+    <h2>Testimonials</h2>
+    <div class="service-card"><p>“Excellent service!” — María (Cádiz)</p></div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="services">
+    <h2>FAQ</h2>
     <div class="service-card">
-      <h3>General Cleaning</h3>
-      <p>Daily & deep cleaning for homes</p>
-    </div>
-    <div class="service-card">
-      <h3>Kitchen Deep Clean</h3>
-      <p>Ovens, hoods and counters spotless</p>
-    </div>
-    <div class="service-card">
-      <h3>Bathroom Sanitation</h3>
-      <p>Showers, tubs and tiles like new</p>
+      <h3>¿Qué productos usan?</h3>
+      <p>Productos profesionales y eco-friendly cuando se solicita.</p>
     </div>
   </section>
 
-  <!-- Scripts: primero Three.js, luego la escena -->
+  <!-- Contact -->
+  <section id="contact" class="services">
+    <h2>Contact</h2>
+    <div class="service-card">
+      <p>+34 611 608 146<br/>camilo.hire@gmail.com<br/>Sotogrande, Cádiz</p>
+    </div>
+  </section>
+
+  <!-- Scripts: primero Three, luego la escena -->
   <script src="https://cdn.jsdelivr.net/npm/three@0.158.0/build/three.min.js"></script>
-  <script src="three-scene.js?v=6"></script>
-  <!-- Tu JS de contenido, si lo usas -->
-  <script src="main.js?v=6"></script>
+  <script src="three-scene.js?v=7"></script>
 </body>
 </html>
