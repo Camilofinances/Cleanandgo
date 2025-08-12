@@ -1,56 +1,60 @@
-// three-scene.js — Fondo de burbujas en toda la pantalla
-(function () {
-  // Si Three.js no cargó, salimos silenciosamente
+// Fondo de burbujas realistas, cubriendo toda la pantalla, ~10 activas siempre.
+// Cámara ORTOGRÁFICA para mapear directamente al viewport.
+(() => {
   if (typeof THREE === 'undefined') return;
-
-  const container = document.getElementById('bg3d');
-  if (!container) return;
+  const host = document.getElementById('bg3d');
+  if (!host) return;
 
   // Renderer
   const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
   renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
-  renderer.setSize(window.innerWidth, window.innerHeight);
-  container.innerHTML = '';
-  container.appendChild(renderer.domElement);
+  host.innerHTML = '';
+  host.appendChild(renderer.domElement);
 
-  // Escena y cámara
+  // Escena + cámara ortográfica
   const scene = new THREE.Scene();
-  const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 100);
-  camera.position.set(0, 0, 6);
+  let camera, aspect;
 
-  // Luces suaves (estilo “limpio”)
-  scene.add(new THREE.HemisphereLight(0xffffff, 0xdfe9f3, 1.15));
-  const dir = new THREE.DirectionalLight(0xffffff, 0.6);
-  dir.position.set(2, 3, 4);
+  function makeOrthoCamera() {
+    aspect = window.innerWidth / window.innerHeight;
+    // Ortho que cubre [-aspect, +aspect] en X y [-1, +1] en Y => pantalla completa.
+    camera = new THREE.OrthographicCamera(-aspect, aspect, 1, -1, -10, 10);
+    camera.position.set(0, 0, 5);
+    camera.lookAt(0, 0, 0);
+  }
+  makeOrthoCamera();
+
+  // Luces suaves
+  scene.add(new THREE.HemisphereLight(0xffffff, 0xe6f0f7, 1.15));
+  const dir = new THREE.DirectionalLight(0xffffff, 0.65);
+  dir.position.set(1.5, 2.5, 3);
   scene.add(dir);
 
-  // Parámetros de burbujas
-  const MAX_POOL = 32;       // máximo en pool
-  const TARGET_ACTIVE = 10;  // visibles simultáneamente
-  const ACTIVE = new Set();
-
-  // Geometría y material compartidos (performance)
-  const bubbleGeo = new THREE.SphereGeometry(1, 24, 24);
+  // Material "realista" (vidrio/gel)
   const bubbleMat = new THREE.MeshPhysicalMaterial({
-    color: 0x9fd6ff,      // azul celeste
+    color: 0x9fd6ff,
     metalness: 0.0,
-    roughness: 0.15,
-    transmission: 0.75,   // “vidrio” (si no lo soporta, cae en transparente)
+    roughness: 0.12,
+    transmission: 0.85,  // efecto vidrio
     transparent: true,
-    opacity: 0.9,
-    thickness: 0.5,
-    clearcoat: 0.6,
-    clearcoatRoughness: 0.2
+    opacity: 0.95,
+    thickness: 0.6,
+    clearcoat: 0.7,
+    clearcoatRoughness: 0.25
   });
+  const bubbleGeo = new THREE.SphereGeometry(1, 32, 32);
 
-  // Pool
+  // Pool + estado
+  const MAX_POOL = 40;
+  const TARGET = 10;
   const pool = [];
+  const active = new Set();
+
   for (let i = 0; i < MAX_POOL; i++) {
-    const m = new THREE.Mesh(bubbleGeo, bubbleMat);
+    const m = new THREE.Mesh(bubbleGeo, bubbleMat.clone());
     m.visible = false;
-    // Propiedades custom
-    m.__data = {
-      vx: 0, vy: 0, vz: 0,
+    m.userData = {
+      vx: 0, vy: 0, // velocidad
       life: 0, maxLife: 0,
       baseScale: 1,
       wobble: Math.random() * Math.PI * 2
@@ -59,88 +63,103 @@
     pool.push(m);
   }
 
-  // Spawner
-  function spawnBubble() {
-    const m = pool.find(b => !b.visible);
-    if (!m) return;
+  // Spawning en TODA la pantalla (entra por cualquier borde aleatorio)
+  function spawn() {
+    const b = pool.find(x => !x.visible);
+    if (!b) return;
 
-    // Posición inicial (repartido por toda la pantalla, un poco por detrás)
-    m.position.set(
-      THREE.MathUtils.randFloatSpread(8),     // x ~[-4,4]
-      THREE.MathUtils.randFloat(-3.5, -1.0),  // y bajo
-      THREE.MathUtils.randFloat(-1.5, 0.5)    // z
-    );
+    const side = Math.floor(Math.random() * 4); // 0 top,1 right,2 bottom,3 left
+    const pad = 0.1; // fuera un poco del borde
+    let x = 0, y = 0, vx = 0, vy = 0;
 
-    // Velocidades
-    const d = m.__data;
-    d.vx = THREE.MathUtils.randFloatSpread(0.12); // leve deriva horizontal
-    d.vy = THREE.MathUtils.randFloat(0.35, 0.8);  // ascenso
-    d.vz = THREE.MathUtils.randFloatSpread(0.04);
+    if (side === 0) { // top → baja
+      x = THREE.MathUtils.randFloat(-aspect, aspect);
+      y = 1 + pad;
+      vx = THREE.MathUtils.randFloatSpread(0.25);
+      vy = THREE.MathUtils.randFloat(-0.35, -0.15);
+    } else if (side === 2) { // bottom → sube
+      x = THREE.MathUtils.randFloat(-aspect, aspect);
+      y = -1 - pad;
+      vx = THREE.MathUtils.randFloatSpread(0.25);
+      vy = THREE.MathUtils.randFloat(0.15, 0.35);
+    } else if (side === 1) { // right → izquierda
+      x = aspect + pad;
+      y = THREE.MathUtils.randFloat(-1, 1);
+      vx = THREE.MathUtils.randFloat(-0.35, -0.15);
+      vy = THREE.MathUtils.randFloatSpread(0.25);
+    } else { // left → derecha
+      x = -aspect - pad;
+      y = THREE.MathUtils.randFloat(-1, 1);
+      vx = THREE.MathUtils.randFloat(0.15, 0.35);
+      vy = THREE.MathUtils.randFloatSpread(0.25);
+    }
 
-    // Tamaño
-    d.baseScale = THREE.MathUtils.randFloat(0.25, 0.6);
-    m.scale.setScalar(d.baseScale);
-
-    // Vida
-    d.life = 0;
-    d.maxLife = THREE.MathUtils.randFloat(6, 12); // seg
-
-    m.visible = true;
-    ACTIVE.add(m);
+    b.position.set(x, y, THREE.MathUtils.randFloat(-0.3, 0.3));
+    const ud = b.userData;
+    ud.vx = vx; ud.vy = vy;
+    ud.baseScale = THREE.MathUtils.randFloat(0.06, 0.18); // radio en coords pantalla
+    b.scale.setScalar(ud.baseScale);
+    ud.life = 0;
+    ud.maxLife = THREE.MathUtils.randFloat(6, 12);
+    b.material.opacity = 0.95;
+    b.visible = true;
+    active.add(b);
   }
 
-  // Mantener siempre ~10 activas
-  function ensureActive() {
-    while (ACTIVE.size < TARGET_ACTIVE) spawnBubble();
+  function keepTarget() {
+    while (active.size < TARGET) spawn();
   }
 
   // Animación
   const clock = new THREE.Clock();
-  function tick() {
-    requestAnimationFrame(tick);
-    const dt = Math.min(clock.getDelta(), 0.033); // cap 30 FPS delta
+  function frame() {
+    requestAnimationFrame(frame);
+    const dt = Math.min(clock.getDelta(), 0.033);
 
-    // Animar activas
-    ACTIVE.forEach(m => {
-      const d = m.__data;
+    active.forEach(b => {
+      const ud = b.userData;
+      // movimiento
+      b.position.x += ud.vx * dt;
+      b.position.y += ud.vy * dt;
 
-      // Movimiento
-      m.position.x += d.vx * dt;
-      m.position.y += d.vy * dt;
-      m.position.z += d.vz * dt;
+      // ligero “respirar”
+      ud.wobble += dt * 2.2;
+      const s = ud.baseScale * (1 + Math.sin(ud.wobble) * 0.06);
+      b.scale.setScalar(s);
 
-      // Wobble/respiración
-      d.wobble += dt * 2;
-      const s = d.baseScale * (1 + Math.sin(d.wobble) * 0.06);
-      m.scale.setScalar(s);
-
-      // Desvanecer al final de la vida
-      d.life += dt;
-      const t = d.life / d.maxLife;
+      // fade in/out
+      ud.life += dt;
+      const t = ud.life / ud.maxLife;
       const fade = t < 0.1 ? t / 0.1 : (t > 0.85 ? (1 - t) / 0.15 : 1);
-      m.material.opacity = 0.9 * Math.max(0, Math.min(1, fade));
+      b.material.opacity = 0.95 * Math.max(0, Math.min(1, fade));
 
-      // Reciclar: si sale por arriba/tiempo agotado/fuera lateral
-      if (m.position.y > 4.2 || d.life >= d.maxLife || Math.abs(m.position.x) > 6) {
-        m.visible = false;
-        ACTIVE.delete(m);
+      // si sale del viewport + margen → reciclar
+      const outX = Math.abs(b.position.x) > (aspect + 0.2);
+      const outY = Math.abs(b.position.y) > (1 + 0.2);
+      if (ud.life >= ud.maxLife || outX || outY) {
+        b.visible = false;
+        active.delete(b);
       }
     });
 
-    ensureActive();
+    keepTarget();
     renderer.render(scene, camera);
   }
 
-  // Resize
-  function onResize() {
-    const w = window.innerWidth;
-    const h = window.innerHeight;
+  // Resize: actualizar renderer y cámara ortográfica
+  function resize() {
+    const w = window.innerWidth, h = window.innerHeight;
     renderer.setSize(w, h);
-    camera.aspect = w / h;
+    aspect = w / h;
+    camera.left = -aspect;
+    camera.right = aspect;
+    camera.top = 1;
+    camera.bottom = -1;
     camera.updateProjectionMatrix();
   }
-  window.addEventListener('resize', onResize, { passive: true });
-  onResize();
-  ensureActive();
-  tick();
+
+  window.addEventListener('resize', resize, { passive: true });
+  resize();
+  keepTarget();
+  frame();
 })();
