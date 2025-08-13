@@ -1,11 +1,10 @@
-// UI + contenido. Sin animaciones que empujen el layout.
+// main.js limpio: UI, contenido y sin animaciones que empujen el layout.
 (() => {
   let content = null;
+
   const $  = (s, sc = document) => sc.querySelector(s);
 
-  /* =======================
-     Construcción de contenido
-  ======================= */
+  /* ===== Construcción de contenido ===== */
   function buildServices(lang = 'en') {
     const c = $('#servicesList'); if (!c || !content) return;
     c.innerHTML = '';
@@ -24,10 +23,7 @@
     g.innerHTML = '';
     (content.stock || []).forEach((u, i) => {
       const img = new Image();
-      img.loading = 'lazy';
-      img.decoding = 'async';
-      img.src = u;
-      img.alt = `Portfolio ${i + 1}`;
+      img.src = u; img.alt = `Portfolio ${i + 1}`;
       g.appendChild(img);
     });
   }
@@ -43,51 +39,30 @@
     });
   }
 
-  /* =======================
-     Idioma (switch accesible)
-  ======================= */
+  /* ===== Idioma ===== */
   function setupLang() {
-    const sw = $('#langToggle');
-    const bn = $('#brandName');
-    const sl = $('#slogan');
-
+    const tg = $('#langToggle'), bn = $('#brandName'), sl = $('#slogan');
     let lang = localStorage.getItem('lang') || 'en';
-    const apply = () => {
-      if (bn) bn.textContent = content?.brand?.name || 'Clean&Go!';
-      if (sl) sl.textContent = content?.brand?.slogan?.[lang] || (lang === 'es' ? 'Brilla. Listo.' : 'Spark. Shine.');
-      // Cabeceras estáticas (si las añades a content.json, cámbialas aquí)
-      $('#servicesTitle')?.replaceChildren(document.createTextNode(lang === 'es' ? 'Servicios' : 'Services'));
-      $('#portfolioTitle')?.replaceChildren(document.createTextNode('Portfolio'));
-      $('#testimonialsTitle')?.replaceChildren(document.createTextNode(lang === 'es' ? 'Reseñas' : 'Testimonials'));
-      $('#faqTitle')?.replaceChildren(document.createTextNode('FAQ'));
-      $('#contactTitle')?.replaceChildren(document.createTextNode(lang === 'es' ? 'Contacto' : 'Contact'));
+    if (tg) tg.checked = lang === 'en';
 
+    function apply() {
+      if (bn) bn.textContent = content?.brand?.name || 'Clean&Go!';
+      if (sl) sl.textContent = content?.brand?.slogan?.[lang] || 'Spark. Shine.';
       buildServices(lang);
       buildTestimonials(lang);
       document.documentElement.lang = lang;
-
-      // Estado visual/ARIA del switch
-      if (sw) {
-        sw.setAttribute('aria-checked', lang === 'en' ? 'true' : 'false');
-        const lbl = sw.querySelector('.lang-label');
-        if (lbl) lbl.textContent = lang === 'en' ? 'EN / ES' : 'ES / EN';
-      }
-    };
-
-    if (sw) {
-      sw.addEventListener('click', () => {
-        lang = (lang === 'en') ? 'es' : 'en';
-        localStorage.setItem('lang', lang);
-        apply();
-      });
     }
+
+    tg?.addEventListener('change', () => {
+      lang = tg.checked ? 'en' : 'es';
+      localStorage.setItem('lang', lang);
+      apply();
+    });
 
     apply();
   }
 
-  /* =======================
-     Carga de contenido
-  ======================= */
+  /* ===== Carga de contenido ===== */
   async function loadAndInit() {
     try {
       const res = await fetch('content.json', { cache: 'no-store' });
@@ -106,12 +81,9 @@
     setupLang();
     buildGallery();
 
-    // NO llamamos a initBubbles aquí: three-scene.js ya auto-inicia con guard
+    // Asegura que el fondo esté activo (por si el auto-init no se disparó)
+    if (typeof window.initBubbles === 'function') window.initBubbles();
   }
 
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', loadAndInit, { once: true });
-  } else {
-    loadAndInit();
-  }
+  document.addEventListener('DOMContentLoaded', loadAndInit, { once: true });
 })();
