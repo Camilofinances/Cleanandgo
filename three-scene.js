@@ -1,12 +1,16 @@
-// Fondo de burbujas 3D que ocupa TODA la ventana sin empujar el layout.
-(function () {
+// Fondo de burbujas 3D: cubre la ventana, no empuja el layout y sigue visible durante todo el scroll.
+(() => {
   function initBubbles() {
     if (typeof THREE === 'undefined') return;
 
-    const host = document.getElementById('bg3d');
-    if (!host) return;
+    // Evita dobles inicializaciones
+    if (window.__bubblesRunning) return;
+    window.__bubblesRunning = true;
 
-    // Asegurar estilo correcto (fondo fijo)
+    const host = document.getElementById('bg3d');
+    if (!host) { window.__bubblesRunning = false; return; }
+
+    // Garantiza fondo correcto
     Object.assign(host.style, {
       position: 'fixed',
       inset: '0px',
@@ -15,13 +19,17 @@
       display: 'block'
     });
 
-    // Renderer transparente
-    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+    // Respeta “reduced motion” y limita DPR para móviles
+    const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const dprCap = prefersReduced ? 1 : Math.min(window.devicePixelRatio || 1, 2);
+
+    // Renderer transparente, modo bajo consumo
+    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, powerPreference: 'low-power' });
+    renderer.setPixelRatio(dprCap);
     host.innerHTML = '';
     host.appendChild(renderer.domElement);
 
-    // Escena y cámara ortográfica (pantalla normalizada -aspect..aspect, -1..1)
+    // Escena + cámara ortográfica mapeada a la ventana
     const scene = new THREE.Scene();
     let camera, aspect;
 
@@ -38,8 +46,8 @@
     dir.position.set(2, 3, 4);
     scene.add(dir);
 
-    // Material "vidrio claro"
-    const base = new THREE.MeshPhysicalMaterial({
+    // Material vidrio claro
+    const mat = new THREE.MeshPhysicalMaterial({
       color: 0xffffff,
       metalness: 0,
       roughness: 0.08,
@@ -54,13 +62,16 @@
     });
     const geo = new THREE.SphereGeometry(1, 32, 32);
 
-    // Pool
-    const MAX_POOL = 40, TARGET = 10;
+    // Densidad adaptada al área de pantalla
+    const areaNorm = (window.innerWidth * window.innerHeight) / (1280 * 720);
+    const TARGET = Math.round((prefersReduced ? 3 : 10) * Math.min(areaNorm, 1.8));
+    const MAX_POOL = Math.max(20, TARGET * 4);
+
     const pool = [];
     const active = new Set();
 
     for (let i = 0; i < MAX_POOL; i++) {
-      const m = new THREE.Mesh(geo, base.clone());
+      const m = new THREE.Mesh(geo, mat.clone());
       m.visible = false;
       m.userData = { vx: 0, vy: 0, life: 0, maxLife: 0, base: 1, wobble: Math.random() * Math.PI * 2 };
       scene.add(m);
@@ -71,7 +82,7 @@
       const b = pool.find(x => !x.visible);
       if (!b) return;
 
-      const side = Math.floor(Math.random() * 4);  // 0 top, 1 right, 2 bottom, 3 left
+      const side = Math.floor(Math.random() * 4); // 0 top, 1 right, 2 bottom, 3 left
       const pad = 0.12;
       let x = 0, y = 0, vx = 0, vy = 0;
 
@@ -92,28 +103,25 @@
       b.position.set(x, y, THREE.MathUtils.randFloat(-0.3, 0.3));
       const d = b.userData;
       d.vx = vx; d.vy = vy;
-      d.base = THREE.MathUtils.randFloat(0.06, 0.18); // radio relativo
+      d.base = THREE.MathUtils.randFloat(0.06, 0.18);
       b.scale.setScalar(d.base);
       d.life = 0; d.maxLife = THREE.MathUtils.randFloat(6, 12);
       b.material.opacity = 0.3;
       b.visible = true; active.add(b);
     }
 
-    function keep() {
-      while (active.size < TARGET) spawn();
-    }
+    function keep() { while (active.size < TARGET) spawn(); }
 
     const clock = new THREE.Clock();
-    function loop() {
-      requestAnimationFrame(loop);
-      const dt = Math.min(clock.getDelta(), 0.033);
+    let rafId = null;
+    let running = true;
 
+    function frame(dt) {
       active.forEach(b => {
         const d = b.userData;
         b.position.x += d.vx * dt;
         b.position.y += d.vy * dt;
 
-        // respiración sutil
         d.wobble += dt * 2;
         const s = d.base * (1 + Math.sin(d.wobble) * 0.05);
         b.scale.setScalar(s);
@@ -125,13 +133,17 @@
 
         const outX = Math.abs(b.position.x) > (aspect + 0.25);
         const outY = Math.abs(b.position.y) > (1 + 0.25);
-        if (d.life >= d.maxLife || outX || outY) {
-          b.visible = false; active.delete(b);
-        }
+        if (d.life >= d.maxLife || outX || outY) { b.visible = false; active.delete(b); }
       });
-
       keep();
       renderer.render(scene, camera);
+    }
+
+    function loop() {
+      if (!running) return;
+      rafId = requestAnimationFrame(loop);
+      const dt = Math.min(clock.getDelta(), 0.033);
+      frame(dt);
     }
 
     function resize() {
@@ -142,12 +154,57 @@
       camera.updateProjectionMatrix();
     }
 
-    window.addEventListener('resize', resize, { passive: true });
+    const onResize = () => resize();
+    const onOrient = () => setTimeout(resize, 200);
+
+    window.addEventListener('resize', onResize, { passive: true });
+    window.addEventListener('orientationchange', onOrient, { passive: true });
+
+    document.addEventListener('visibilitychange', () => {
+      const hidden = document.hidden;
+      running = !hidden;
+      if (!running) cancelAnimationFrame(rafId);
+      else { clock.getDelta(); loop(); } // reancla delta y reanuda
+    });
+
+    // Context lost (Safari etc.)
+    renderer.getContext().canvas.addEventListener('webglcontextlost', (e) => {
+      e.preventDefault();
+      // podrías re-crear escena si lo deseas; aquí solo pausamos
+      running = false;
+      cancelAnimationFrame(rafId);
+    }, { passive: false });
+
+    // Exponer un dispose opcional para futuras reinicializaciones
+    function dispose() {
+      running = false;
+      cancelAnimationFrame(rafId);
+      window.removeEventListener('resize', onResize);
+      window.removeEventListener('orientationchange', onOrient);
+
+      scene.traverse(o => {
+        o.geometry?.dispose?.();
+        o.material?.dispose?.();
+      });
+      renderer.dispose();
+      host.innerHTML = '';
+      window.__bubblesRunning = false;
+    }
+    window.disposeBubbles = dispose;
+
+    // Arranque
     resize();
     keep();
     loop();
   }
 
-  // Export
+  // Auto-init cuando el DOM y Three están listos
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initBubbles, { once: true });
+  } else {
+    initBubbles();
+  }
+
+  // Export por si quieres llamarlo manualmente (no es necesario)
   window.initBubbles = initBubbles;
 })();
