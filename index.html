@@ -5,8 +5,8 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Clean&Go! — Spark. Shine.</title>
 
-  <!-- Usa tu CSS actual; si lo has versionado, deja v=16 -->
-  <link rel="stylesheet" href="styles.css?v=16" />
+  <!-- CSS (versión 20 para evitar caché) -->
+  <link rel="stylesheet" href="styles.css?v=20" />
 
   <!-- Librerías -->
   <script src="https://cdn.jsdelivr.net/npm/three@0.158.0/build/three.min.js"></script>
@@ -15,9 +15,10 @@
 </head>
 <body>
 
-  <!-- Canvas 3D -->
+  <!-- Canvas 3D al fondo -->
   <div id="bg3d" class="three-canvas" aria-hidden="true"></div>
 
+  <!-- Header fijo -->
   <header class="site-header">
     <img src="logo.svg?v=10" class="logo" alt="Clean&Go!" />
     <div class="controls">
@@ -32,28 +33,35 @@
   <main id="main" class="horiz-wrapper">
     <div class="horiz-container">
 
+      <!-- Hero -->
       <section class="panel hero">
-        <!-- 👇 Centro todo el bloque (título + subtítulo + botones) -->
-        <div class="hero-inner" style="text-align:center;">
-          <!-- Título con identidad superpuesta; se mueve con el texto -->
-          <div class="hero-title" style="display:inline-block; position:relative;">
+        <div class="hero-inner">
+          <!-- Título con identidad superpuesta (se mueve con el texto) -->
+          <div class="hero-title">
             <div class="identidad-container">
-              <!-- Mantengo el nombre con espacio (%20) para que cargue -->
-              <img src="identidad%20.png?v=16" class="identidad" alt="Identidad Clean&Go" />
+              <!-- Usa el nombre con espacio codificado para que cargue -->
+              <img
+                src="identidad%20.png?v=20"
+                class="identidad"
+                alt="Identidad Clean&Go"
+                loading="eager"
+                decoding="async"
+                fetchpriority="high"
+              />
             </div>
             <h1 id="brandName">Clean&Go!</h1>
           </div>
 
-          <!-- Subtítulo alineado con el título -->
-          <p id="slogan" style="margin-top:10px; margin-bottom:26px;">Spark. Shine.</p>
+          <p id="slogan">Spark. Shine.</p>
 
-          <div class="cta-row" style="display:inline-flex; gap:12px;">
+          <div class="cta-row">
             <a class="btn primary" href="#contact">Contact</a>
             <a class="btn ghost" href="#portfolio">Portfolio</a>
           </div>
         </div>
       </section>
 
+      <!-- Services -->
       <section class="panel services">
         <div class="panel-inner">
           <h2>Services</h2>
@@ -61,6 +69,7 @@
         </div>
       </section>
 
+      <!-- Portfolio -->
       <section class="panel portfolio" id="portfolio">
         <div class="panel-inner">
           <h2>Portfolio</h2>
@@ -68,6 +77,7 @@
         </div>
       </section>
 
+      <!-- Testimonials -->
       <section class="panel testimonials">
         <div class="panel-inner">
           <h2>Testimonials</h2>
@@ -75,6 +85,7 @@
         </div>
       </section>
 
+      <!-- FAQ -->
       <section class="panel faq">
         <div class="panel-inner">
           <h2>FAQ</h2>
@@ -91,6 +102,7 @@
         </div>
       </section>
 
+      <!-- Contact -->
       <section class="panel contact" id="contact">
         <div class="panel-inner">
           <h2>Contact</h2>
@@ -107,6 +119,7 @@
         </div>
       </section>
 
+      <!-- Footer -->
       <section class="panel footer">
         <div class="panel-inner">
           <div class="footer-grid">
