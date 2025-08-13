@@ -12,11 +12,11 @@ img { max-width: 100%; display: block; }
   --muted:#6c7a86;
   --card:#fff;
 
-  /* Ajustes de la identidad (40% más grande) */
+  /* Identidad 40% más grande; misma posición */
   --identidad-size-desktop: 336px;  /* antes 240px */
-  --identidad-top-desktop:  -94px;  /* misma posición */
+  --identidad-top-desktop:  -94px;  /* negativo = por encima del h1 */
   --identidad-size-mobile:  241px;  /* antes 172px */
-  --identidad-top-mobile:   -78px;  /* misma posición */
+  --identidad-top-mobile:   -78px;
 }
 
 body{
@@ -91,17 +91,18 @@ body{
   display:inline-block;  /* La identidad se centra con respecto al ancho del h1 */
 }
 
-/* ► Identidad: más arriba, centrada sobre “Clean&Go!” y más grande */
+/* ► Identidad: centrada sobre “Clean&Go!”, más arriba y más grande */
 .identidad-container{
   position:absolute;
   left:50%;
   transform:translateX(-50%);
-  top:var(--identidad-top-desktop);   /* negativo = por encima del h1 */
+  top:var(--identidad-top-desktop);
   z-index:2;
   pointer-events:none;
 }
-.identidad{
-  width:var(--identidad-size-desktop);
+/* Refuerzo de prioridad + !important por si queda CSS viejo en caché */
+.hero .identidad{
+  width:var(--identidad-size-desktop) !important;
   height:auto;
   object-fit:contain;
   pointer-events:none;
@@ -164,12 +165,8 @@ body{
   .hero-inner{ padding-top:100px; }
 
   /* Ajustes móviles de la identidad */
-  .identidad{
-    width:var(--identidad-size-mobile);
-  }
-  .identidad-container{
-    top:var(--identidad-top-mobile);
-  }
+  .identidad-container{ top:var(--identidad-top-mobile); }
+  .hero .identidad{ width:var(--identidad-size-mobile) !important; }
 
   .hero h1{ font-size:36px; }
   .gallery img{ height:160px; }
