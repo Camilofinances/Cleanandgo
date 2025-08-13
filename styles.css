@@ -91,7 +91,7 @@ body{
   display:inline-block;  /* La identidad se centra con respecto al ancho del h1 */
 }
 
-/* ► Identidad: centrada sobre “Clean&Go!”, más arriba y más grande */
+/* ► Identidad: centrada sobre “Clean&Go!” y más grande */
 .identidad-container{
   position:absolute;
   left:50%;
@@ -100,10 +100,11 @@ body{
   z-index:2;
   pointer-events:none;
 }
-/* Refuerzo de prioridad + !important por si queda CSS viejo en caché */
+
+/* Tamaño controlado por CSS (con prioridad alta) */
 .hero .identidad{
   width:var(--identidad-size-desktop) !important;
-  height:auto;
+  height:auto !important;
   object-fit:contain;
   pointer-events:none;
 }
@@ -123,6 +124,9 @@ body{
 }
 .btn.primary{ background:var(--brand-mid); color:#fff; }
 .btn.ghost{ border-color:#cbd5e1; color:var(--brand-mid); }
+
+/* Utilidades */
+.hidden{ display:none !important; }
 
 /* =========================================================
    Secciones
@@ -164,7 +168,6 @@ body{
   .logo{ height:36px; }
   .hero-inner{ padding-top:100px; }
 
-  /* Ajustes móviles de la identidad */
   .identidad-container{ top:var(--identidad-top-mobile); }
   .hero .identidad{ width:var(--identidad-size-mobile) !important; }
 
