@@ -1,58 +1,103 @@
-/* ===== Reset básico ===== */
+/* =======================
+   Reset & tokens
+======================= */
 * { box-sizing: border-box; }
 html, body { height: 100%; margin: 0; }
+html { scroll-behavior: smooth; }
+:root {
+  --c-text: #0b2b40;
+  --c-accent: #1e4e79;
+  --z-bg: 0;
+  --z-main: 1;
+  --z-header: 10;
+}
 body {
   font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
   background: #fff;
-  color: #0b2b40;
+  color: var(--c-text);
   overflow-x: hidden;
 }
 img { max-width: 100%; height: auto; display: block; }
 
-/* ===== Fondo 3D ===== */
+/* Focus visible accesible */
+:focus-visible {
+  outline: 3px solid var(--c-accent);
+  outline-offset: 2px;
+}
+
+/* =======================
+   Fondo 3D
+======================= */
 #bg3d.three-canvas {
-  position: fixed;      /* <- clave: fuera del flujo, no empuja layout */
+  position: fixed;
   inset: 0;
-  z-index: 0;           /* por detrás del contenido */
-  pointer-events: none; /* no bloquea clics */
+  z-index: var(--z-bg);
+  pointer-events: none;
   display: block;
 }
 
-/* ===== Header fijo ===== */
+/* =======================
+   Header fijo
+======================= */
 .site-header {
   position: fixed;
   inset: 0 0 auto 0;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 1rem clamp(1rem, 3vw, 2rem);
-  background: transparent;        /* sobre las burbujas */
-  z-index: 1000;                   /* por encima del fondo y contenido */
+  padding: calc(1rem + env(safe-area-inset-top)) clamp(1rem, 3vw, 2rem) 1rem;
+  padding-left: calc(1rem + env(safe-area-inset-left));
+  padding-right: calc(1rem + env(safe-area-inset-right));
+  background: transparent;
+  z-index: var(--z-header);
 }
 .site-header .logo { height: 28px; }
-.controls { display: flex; align-items: center; gap: .5rem; }
-.lang-label { font-size: .9rem; }
 
-/* Switch */
-.switch { position: relative; width: 40px; height: 20px; display: inline-block; }
-.switch input { opacity: 0; width: 0; height: 0; }
-.slider {
-  position: absolute; inset: 0; border-radius: 20px;
-  background: #ccc; transition: .3s;
+/* Switch accesible con botón */
+.switch {
+  --w: 48px; --h: 24px; --p: 3px;
+  position: relative;
+  width: var(--w);
+  height: var(--h);
+  border-radius: var(--h);
+  background: #ccc;
+  border: 0;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-start;
+  cursor: pointer;
 }
-.slider::before {
-  content: ""; position: absolute; left: 3px; bottom: 3px;
-  width: 14px; height: 14px; border-radius: 50%; background: #fff; transition: .3s;
+.switch .slider {
+  position: absolute; inset: 0;
+  border-radius: var(--h);
+  transition: background .25s ease;
 }
-input:checked + .slider { background: #0b2b40; }
-input:checked + .slider::before { transform: translateX(20px); }
+.switch::after {
+  content: "";
+  position: absolute;
+  width: calc(var(--h) - 2*var(--p));
+  height: calc(var(--h) - 2*var(--p));
+  left: var(--p); top: var(--p);
+  border-radius: 50%;
+  background: #fff;
+  transition: transform .25s ease;
+}
+.switch[aria-checked="true"] { background: var(--c-accent); }
+.switch[aria-checked="true"]::after { transform: translateX(calc(var(--w) - var(--h))); }
+.switch .lang-label {
+  position: relative;
+  margin-left: calc(var(--w) + .5rem);
+  font-size: .9rem; user-select: none;
+}
 
-/* ===== Layout de secciones ===== */
-.horiz-wrapper { display: flex; flex-direction: row; }
-.horiz-container { display: flex; flex-direction: column; width: 100%; position: relative; z-index: 1; }
+/* =======================
+   Main / Secciones
+======================= */
+main { position: relative; z-index: var(--z-main); }
 
 .panel {
-  min-height: 100svh;                 /* mejor que 100vh en iOS */
+  min-height: 100svh;               /* evita saltos en iOS */
   display: flex;
   align-items: center;
   justify-content: center;
@@ -60,7 +105,9 @@ input:checked + .slider::before { transform: translateX(20px); }
 }
 .panel-inner { max-width: 960px; width: 100%; }
 
-/* ===== Hero ===== */
+/* =======================
+   Hero
+======================= */
 .hero { text-align: center; }
 .hero-inner { display: flex; flex-direction: column; align-items: center; gap: 1rem; }
 .hero-title { position: relative; display: inline-block; }
@@ -68,17 +115,17 @@ input:checked + .slider::before { transform: translateX(20px); }
 .identidad-container {
   position: absolute;
   left: 50%; transform: translateX(-50%);
-  top: -220px; /* imagen “flotando” encima del título */
+  top: clamp(-200px, -22vh, -120px);  /* adaptable */
   z-index: 2;
   pointer-events: none;
 }
-.hero .identidad { width: 300px; }
+.hero .identidad { width: clamp(220px, 28vw, 320px); }
 
 #brandName {
   position: relative; z-index: 3;
   font-size: clamp(2rem, 6vw, 2.8rem);
   font-weight: 800;
-  margin: 0; /* evita colapso de márgenes con el body */
+  margin: 0;
 }
 
 #slogan {
@@ -96,12 +143,14 @@ input:checked + .slider::before { transform: translateX(20px); }
   font-size: 1rem;
   transition: background .25s ease, color .25s ease, border-color .25s ease;
 }
-.btn.primary { background: #1e4e79; color: #fff; }
+.btn.primary { background: var(--c-accent); color: #fff; }
 .btn.primary:hover { background: #163b5c; }
-.btn.ghost { border: 2px solid #1e4e79; color: #1e4e79; background: transparent; }
-.btn.ghost:hover { background: #1e4e79; color: #fff; }
+.btn.ghost { border: 2px solid var(--c-accent); color: var(--c-accent); background: transparent; }
+.btn.ghost:hover { background: var(--c-accent); color: #fff; }
 
-/* ===== Otras secciones ===== */
+/* =======================
+   Otras secciones
+======================= */
 .services-grid {
   display: grid; gap: 1rem;
   grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
@@ -115,11 +164,14 @@ input:checked + .slider::before { transform: translateX(20px); }
 .faq-list summary { cursor: pointer; font-weight: 700; }
 .footer-grid { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 1rem; }
 
-/* ===== Utilidades ===== */
+/* =======================
+   Utilidades
+======================= */
 .hidden { position: absolute !important; left: -9999px !important; }
 
-/* ===== Mobile ===== */
+/* =======================
+   Mobile tweaks
+======================= */
 @media (max-width: 720px) {
-  .identidad-container { top: -180px; }
-  .hero .identidad { width: 240px !important; }
+  .hero .identidad { width: clamp(200px, 45vw, 260px); }
 }
