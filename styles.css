@@ -6,17 +6,19 @@ html, body { height: 100%; width: 100%; overflow-x: hidden; }
 img { max-width: 100%; display: block; }
 
 :root{
+  /* Colores de marca */
   --brand:#17324d;
   --brand-mid:#2a5d8a;
   --text:#0f1720;
   --muted:#6c7a86;
   --card:#fff;
 
-  /* Identidad 40% más grande; misma posición */
-  --identidad-size-desktop: 336px;  /* antes 240px */
-  --identidad-top-desktop:  -94px;  /* negativo = por encima del h1 */
-  --identidad-size-mobile:  241px;  /* antes 172px */
-  --identidad-top-mobile:   -78px;
+  /* ---------- Identidad (logo con fregona) ---------- */
+  /* +40% respecto a 240px (desktop) y 172px (móvil) */
+  --identidad-size-desktop: 336px;
+  --identidad-top-desktop:   -94px;  /* negativo = por encima del h1 */
+  --identidad-size-mobile:   241px;
+  --identidad-top-mobile:    -78px;
 }
 
 body{
@@ -82,16 +84,17 @@ body{
 .hero-inner{
   max-width:640px; margin:0 auto;
   position:relative;
-  padding-top:120px; /* aire por el header */
+  padding-top:120px;         /* aire por el header */
+  text-align:center;         /* centra título, subtítulo y botones */
 }
 
 /* Contenedor del título para posicionar la identidad encima */
 .hero-title{
   position:relative;
-  display:inline-block;  /* La identidad se centra con respecto al ancho del h1 */
+  display:inline-block;      /* la identidad se centra respecto al ancho del h1 */
 }
 
-/* ► Identidad: centrada sobre “Clean&Go!” y más grande */
+/* ► Identidad: centrada, grande y por encima del h1 */
 .identidad-container{
   position:absolute;
   left:50%;
@@ -100,8 +103,7 @@ body{
   z-index:2;
   pointer-events:none;
 }
-
-/* Tamaño controlado por CSS (con prioridad alta) */
+/* Reforzamos el tamaño para que nada lo pise */
 .hero .identidad{
   width:var(--identidad-size-desktop) !important;
   height:auto !important;
@@ -115,7 +117,9 @@ body{
   margin:8px 0 0;
 }
 .hero p{
-  font-size:20px; margin:10px 0 26px; color:#385a74;
+  font-size:20px;
+  margin:10px 0 26px;
+  color:#385a74;
 }
 
 .btn{
@@ -124,9 +128,6 @@ body{
 }
 .btn.primary{ background:var(--brand-mid); color:#fff; }
 .btn.ghost{ border-color:#cbd5e1; color:var(--brand-mid); }
-
-/* Utilidades */
-.hidden{ display:none !important; }
 
 /* =========================================================
    Secciones
@@ -160,6 +161,9 @@ body{
 .footer-grid{
   display:flex; gap:24px; justify-content:space-between; align-items:flex-start;
 }
+
+/* Utilidades */
+.hidden{ display:none !important; }
 
 /* =========================================================
    Responsive
