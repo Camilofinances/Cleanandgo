@@ -103,10 +103,10 @@ body{
   z-index:2;
   pointer-events:none;
 }
-/* Reforzamos el tamaño para que nada lo pise */
+/* Tamaño normal definido en variables */
 .hero .identidad{
-  width:var(--identidad-size-desktop) !important;
-  height:auto !important;
+  width:var(--identidad-size-desktop);
+  height:auto;
   object-fit:contain;
   pointer-events:none;
 }
@@ -173,8 +173,23 @@ body{
   .hero-inner{ padding-top:100px; }
 
   .identidad-container{ top:var(--identidad-top-mobile); }
-  .hero .identidad{ width:var(--identidad-size-mobile) !important; }
+  .hero .identidad{ width:var(--identidad-size-mobile); }
 
   .hero h1{ font-size:36px; }
   .gallery img{ height:160px; }
+}
+
+/* =========================================================
+   Blindaje para identidad (sobrescribe TODO lo anterior)
+   ========================================================= */
+.hero .identidad {
+  width: 340px !important;   /* tamaño fijo forzado */
+  height: auto !important;
+  max-width: none !important;
+  display: block !important;
+}
+@media (max-width: 720px) {
+  .hero .identidad {
+    width: 240px !important; /* tamaño fijo forzado móvil */
+  }
 }
