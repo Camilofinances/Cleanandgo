@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Clean&Go! — Spark. Shine.</title>
 
-  <!-- Forzamos recarga del CSS -->
+  <!-- Usa tu CSS actual; si lo has versionado, deja v=16 -->
   <link rel="stylesheet" href="styles.css?v=16" />
 
   <!-- Librerías -->
@@ -33,19 +33,21 @@
     <div class="horiz-container">
 
       <section class="panel hero">
-        <div class="hero-inner">
-
-          <!-- Título con identidad superpuesta (se mueve con el texto) -->
-          <div class="hero-title">
+        <!-- 👇 Centro todo el bloque (título + subtítulo + botones) -->
+        <div class="hero-inner" style="text-align:center;">
+          <!-- Título con identidad superpuesta; se mueve con el texto -->
+          <div class="hero-title" style="display:inline-block; position:relative;">
             <div class="identidad-container">
-              <!-- 👇 Renombrado sin espacio + cache-buster -->
-              <img src="identidad.png?v=16" class="identidad" alt="Identidad Clean&Go" />
+              <!-- Mantengo el nombre con espacio (%20) para que cargue -->
+              <img src="identidad%20.png?v=16" class="identidad" alt="Identidad Clean&Go" />
             </div>
             <h1 id="brandName">Clean&Go!</h1>
           </div>
 
-          <p id="slogan">Spark. Shine.</p>
-          <div class="cta-row">
+          <!-- Subtítulo alineado con el título -->
+          <p id="slogan" style="margin-top:10px; margin-bottom:26px;">Spark. Shine.</p>
+
+          <div class="cta-row" style="display:inline-flex; gap:12px;">
             <a class="btn primary" href="#contact">Contact</a>
             <a class="btn ghost" href="#portfolio">Portfolio</a>
           </div>
