@@ -11,6 +11,12 @@ img { max-width: 100%; display: block; }
   --text:#0f1720;
   --muted:#6c7a86;
   --card:#fff;
+
+  /* Ajustes de la identidad */
+  --identidad-size-desktop: 240px;  /* más grande */
+  --identidad-top-desktop:  -94px;  /* más arriba (valor negativo) */
+  --identidad-size-mobile:  172px;  /* más grande en móvil */
+  --identidad-top-mobile:   -78px;  /* más arriba en móvil */
 }
 
 body{
@@ -75,21 +81,27 @@ body{
 
 .hero-inner{
   max-width:640px; margin:0 auto;
-  position:relative;                /* para posicionar la identidad dentro */
-  padding-top:120px;                /* deja espacio para el logo arriba */
+  position:relative;
+  padding-top:120px; /* aire por el header */
 }
 
-/* ► Identidad sobre el título (ahora un poco más arriba, más centrada y más grande) */
+/* Contenedor del título para posicionar la identidad encima */
+.hero-title{
+  position:relative;
+  display:inline-block;  /* La identidad se centra con respecto al ancho del h1 */
+}
+
+/* ► Identidad: más arriba, centrada sobre “Clean&Go!” y más grande */
 .identidad-container{
   position:absolute;
-  top:6px;                          /* antes 18px → sube un poco */
-  left:30%;                         /* antes 24% → más hacia el centro del título */
+  left:50%;
   transform:translateX(-50%);
+  top:var(--identidad-top-desktop);   /* negativo = por encima del h1 */
   z-index:2;
   pointer-events:none;
 }
 .identidad{
-  width:230px;                      /* antes 200px → ligeramente más grande */
+  width:var(--identidad-size-desktop);
   height:auto;
   object-fit:contain;
   pointer-events:none;
@@ -151,12 +163,12 @@ body{
   .logo{ height:36px; }
   .hero-inner{ padding-top:100px; }
 
+  /* Ajustes móviles de la identidad */
   .identidad{
-    width:160px;                    /* antes 140px → un poco más grande en móvil */
+    width:var(--identidad-size-mobile);
   }
   .identidad-container{
-    top:2px;                        /* un pelín más arriba en móvil */
-    left:28%;                       /* más centrada respecto al título en móvil */
+    top:var(--identidad-top-mobile);
   }
 
   .hero h1{ font-size:36px; }
