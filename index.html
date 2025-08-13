@@ -6,7 +6,7 @@
   <title>Clean&Go! — Spark. Shine.</title>
 
   <!-- Forzamos recarga del CSS -->
-  <link rel="stylesheet" href="styles.css?v=14" />
+  <link rel="stylesheet" href="styles.css?v=16" />
 
   <!-- Librerías -->
   <script src="https://cdn.jsdelivr.net/npm/three@0.158.0/build/three.min.js"></script>
@@ -22,7 +22,7 @@
     <img src="logo.svg?v=10" class="logo" alt="Clean&Go!" />
     <div class="controls">
       <label class="switch">
-        <input id="langToggle" type="checkbox" />
+        <input id="langToggle" type="checkbox" aria-label="Toggle language" />
         <span class="slider"></span>
       </label>
       <span class="lang-label">ES / EN</span>
@@ -35,11 +35,11 @@
       <section class="panel hero">
         <div class="hero-inner">
 
-          <!-- Título con identidad superpuesta: se mueve con el texto -->
+          <!-- Título con identidad superpuesta (se mueve con el texto) -->
           <div class="hero-title">
             <div class="identidad-container">
-              <!-- Forzamos recarga de la imagen también -->
-              <img src="identidad%20.png?v=14" class="identidad" alt="Identidad Clean&Go" />
+              <!-- 👇 Renombrado sin espacio + cache-buster -->
+              <img src="identidad.png?v=16" class="identidad" alt="Identidad Clean&Go" />
             </div>
             <h1 id="brandName">Clean&Go!</h1>
           </div>
