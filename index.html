@@ -5,7 +5,8 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Clean&Go! — Spark. Shine.</title>
 
-  <link rel="stylesheet" href="styles.css?v=10" />
+  <!-- Forzamos recarga del CSS -->
+  <link rel="stylesheet" href="styles.css?v=12" />
 
   <!-- Librerías -->
   <script src="https://cdn.jsdelivr.net/npm/three@0.158.0/build/three.min.js"></script>
@@ -33,12 +34,16 @@
 
       <section class="panel hero">
         <div class="hero-inner">
-          <!-- Logo de identidad ajustado -->
-          <div class="identidad-container">
-            <img src="identidad%20.png?v=10" class="identidad" alt="Identidad Clean&Go" />
+
+          <!-- Título con identidad superpuesta: se mueve con el texto -->
+          <div class="hero-title">
+            <div class="identidad-container">
+              <!-- Forzamos recarga de la imagen también -->
+              <img src="identidad%20.png?v=12" class="identidad" alt="Identidad Clean&Go" />
+            </div>
+            <h1 id="brandName">Clean&Go!</h1>
           </div>
 
-          <h1 id="brandName">Clean&Go!</h1>
           <p id="slogan">Spark. Shine.</p>
           <div class="cta-row">
             <a class="btn primary" href="#contact">Contact</a>
