@@ -12,11 +12,11 @@ img { max-width: 100%; display: block; }
   --muted:#6c7a86;
   --card:#fff;
 
-  /* Ajustes de la identidad */
-  --identidad-size-desktop: 240px;  /* más grande */
-  --identidad-top-desktop:  -94px;  /* más arriba (valor negativo) */
-  --identidad-size-mobile:  172px;  /* más grande en móvil */
-  --identidad-top-mobile:   -78px;  /* más arriba en móvil */
+  /* Ajustes de la identidad (40% más grande) */
+  --identidad-size-desktop: 336px;  /* antes 240px */
+  --identidad-top-desktop:  -94px;  /* misma posición */
+  --identidad-size-mobile:  241px;  /* antes 172px */
+  --identidad-top-mobile:   -78px;  /* misma posición */
 }
 
 body{
