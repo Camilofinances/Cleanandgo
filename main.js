@@ -1,95 +1,117 @@
-// Carga de contenido + UI + scroll horizontal en desktop (GSAP)
+// UI + contenido. Sin animaciones que empujen el layout.
 (() => {
   let content = null;
-  const $ = (s, sc=document) => sc.querySelector(s);
+  const $  = (s, sc = document) => sc.querySelector(s);
 
-  function buildServices(lang='en'){
-    const c = $('#servicesList'); if(!c || !content) return;
+  /* =======================
+     Construcción de contenido
+  ======================= */
+  function buildServices(lang = 'en') {
+    const c = $('#servicesList'); if (!c || !content) return;
     c.innerHTML = '';
-    (content.services||[]).forEach(s=>{
+    (content.services || []).forEach(s => {
       const t = s[lang] || s.en || '';
-      const [ti,de] = t.split(' — ');
+      const [ti, de] = t.split(' — ');
       const el = document.createElement('div');
       el.className = 'service-card';
-      el.innerHTML = `<h3>${ti||''}</h3><p>${de||''}</p>`;
+      el.innerHTML = `<h3>${ti || ''}</h3><p>${de || ''}</p>`;
       c.appendChild(el);
     });
   }
 
-  function buildGallery(){
-    const g = $('#gallery'); if(!g || !content) return;
+  function buildGallery() {
+    const g = $('#gallery'); if (!g || !content) return;
     g.innerHTML = '';
-    (content.stock||[]).forEach((u,i)=>{
+    (content.stock || []).forEach((u, i) => {
       const img = new Image();
-      img.src = u; img.alt = `Portfolio ${i+1}`;
+      img.loading = 'lazy';
+      img.decoding = 'async';
+      img.src = u;
+      img.alt = `Portfolio ${i + 1}`;
       g.appendChild(img);
     });
   }
 
-  function buildTestimonials(lang='en'){
-    const t = $('#testimonials'); if(!t || !content) return;
+  function buildTestimonials(lang = 'en') {
+    const t = $('#testimonials'); if (!t || !content) return;
     t.innerHTML = '';
-    (content.testimonials||[]).forEach(o=>{
+    (content.testimonials || []).forEach(o => {
       const el = document.createElement('article');
       el.className = 'testimonial';
-      el.innerHTML = `<strong>${o.name} — ${o.city}</strong><p>${o[lang]||o.en||''}</p>`;
+      el.innerHTML = `<strong>${o.name} — ${o.city}</strong><p>${o[lang] || o.en || ''}</p>`;
       t.appendChild(el);
     });
   }
 
-  function setupLang(){
-    const tg = $('#langToggle'), bn = $('#brandName'), sl = $('#slogan');
+  /* =======================
+     Idioma (switch accesible)
+  ======================= */
+  function setupLang() {
+    const sw = $('#langToggle');
+    const bn = $('#brandName');
+    const sl = $('#slogan');
+
     let lang = localStorage.getItem('lang') || 'en';
-    if (tg) tg.checked = lang === 'en';
-    function apply(){
+    const apply = () => {
       if (bn) bn.textContent = content?.brand?.name || 'Clean&Go!';
-      if (sl) sl.textContent = content?.brand?.slogan?.[lang] || '';
-      buildServices(lang); buildTestimonials(lang);
+      if (sl) sl.textContent = content?.brand?.slogan?.[lang] || (lang === 'es' ? 'Brilla. Listo.' : 'Spark. Shine.');
+      // Cabeceras estáticas (si las añades a content.json, cámbialas aquí)
+      $('#servicesTitle')?.replaceChildren(document.createTextNode(lang === 'es' ? 'Servicios' : 'Services'));
+      $('#portfolioTitle')?.replaceChildren(document.createTextNode('Portfolio'));
+      $('#testimonialsTitle')?.replaceChildren(document.createTextNode(lang === 'es' ? 'Reseñas' : 'Testimonials'));
+      $('#faqTitle')?.replaceChildren(document.createTextNode('FAQ'));
+      $('#contactTitle')?.replaceChildren(document.createTextNode(lang === 'es' ? 'Contacto' : 'Contact'));
+
+      buildServices(lang);
+      buildTestimonials(lang);
       document.documentElement.lang = lang;
+
+      // Estado visual/ARIA del switch
+      if (sw) {
+        sw.setAttribute('aria-checked', lang === 'en' ? 'true' : 'false');
+        const lbl = sw.querySelector('.lang-label');
+        if (lbl) lbl.textContent = lang === 'en' ? 'EN / ES' : 'ES / EN';
+      }
+    };
+
+    if (sw) {
+      sw.addEventListener('click', () => {
+        lang = (lang === 'en') ? 'es' : 'en';
+        localStorage.setItem('lang', lang);
+        apply();
+      });
     }
-    tg?.addEventListener('change', ()=>{
-      lang = tg.checked ? 'en' : 'es';
-      localStorage.setItem('lang', lang);
-      apply();
-    });
+
     apply();
   }
 
-  function setupHoriz(){
-    if (!window.gsap || !window.ScrollTrigger) return;
-    gsap.registerPlugin(ScrollTrigger);
-    const panels = gsap.utils.toArray('.panel');
-    const isDesktop = innerWidth > 1024;
-    if (!isDesktop || panels.length < 2) return;
-    gsap.to(panels, {
-      xPercent: -100*(panels.length-1),
-      ease: 'none',
-      scrollTrigger: {
-        trigger: '.horiz-wrapper',
-        pin: true, scrub: 0.8,
-        end: () => '+=' + (panels.length * innerWidth),
-        snap: 1/(panels.length-1),
-        invalidateOnRefresh: true
-      }
-    });
-  }
-
-  async function loadAndInit(){
-    try{
+  /* =======================
+     Carga de contenido
+  ======================= */
+  async function loadAndInit() {
+    try {
       const res = await fetch('content.json', { cache: 'no-store' });
-      if (!res.ok) throw new Error('HTTP '+res.status);
+      if (!res.ok) throw new Error('HTTP ' + res.status);
       content = await res.json();
-    }catch(e){
-      console.error('No se pudo cargar content.json', e);
-      content = { brand:{name:'Clean&Go!', slogan:{es:'Brilla. Listo.', en:'Spark. Shine.'}}, services:[], testimonials:[], stock:[] };
+    } catch (e) {
+      console.warn('No se pudo cargar content.json, usando valores por defecto.', e);
+      content = {
+        brand: { name: 'Clean&Go!', slogan: { es: 'Brilla. Listo.', en: 'Spark. Shine.' } },
+        services: [],
+        testimonials: [],
+        stock: []
+      };
     }
+
     setupLang();
     buildGallery();
-    setupHoriz();
 
-    // Lanza burbujas 3D si están disponibles
-    if (typeof window.initBubbles === 'function') window.initBubbles();
+    // NO llamamos a initBubbles aquí: three-scene.js ya auto-inicia con guard
   }
 
-  loadAndInit();
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', loadAndInit, { once: true });
+  } else {
+    loadAndInit();
+  }
 })();
