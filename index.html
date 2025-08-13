@@ -3,37 +3,29 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="color-scheme" content="light only" />
-  <meta name="description" content="Clean&Go! — Limpieza profesional en Sotogrande y alrededores. Spark. Shine." />
   <title>Clean&Go! — Spark. Shine.</title>
+  <meta name="color-scheme" content="light only" />
 
-  <!-- Preload de imágenes críticas -->
-  <link rel="preload" href="logo.svg?v=10" as="image" type="image/svg+xml" />
-  <link rel="preload" href="identidad.png?v=300" as="image" />
+  <!-- CSS (bump de versión para saltar caché) -->
+  <link rel="stylesheet" href="styles.css?v=200" />
 
-  <!-- CSS -->
-  <link rel="stylesheet" href="styles.css?v=300" />
-
-  <!-- Three.js (defer para no bloquear el parser) -->
-  <script defer src="https://cdn.jsdelivr.net/npm/three@0.158.0/build/three.min.js"></script>
-  <!-- Nuestro fondo de burbujas -->
-  <script defer src="three-scene.js?v=300"></script>
-  <!-- App/UI -->
-  <script defer src="main.js?v=300"></script>
+  <!-- Librerías -->
+  <script src="https://cdn.jsdelivr.net/npm/three@0.158.0/build/three.min.js"></script>
 </head>
 <body>
 
-  <!-- Fondo 3D (no empuja layout, siempre cubre la ventana) -->
+  <!-- Fondo 3D: ocupa toda la ventana, no empuja layout -->
   <div id="bg3d" class="three-canvas" aria-hidden="true"></div>
 
   <!-- Header fijo -->
   <header class="site-header" role="banner">
     <img src="logo.svg?v=10" class="logo" alt="Clean&Go!" />
     <div class="controls">
-      <button id="langToggle" class="switch" role="switch" aria-checked="false" aria-label="Cambiar idioma: ES/EN">
-        <span class="slider" aria-hidden="true"></span>
-        <span class="lang-label" aria-hidden="true">ES / EN</span>
-      </button>
+      <label class="switch">
+        <input id="langToggle" type="checkbox" aria-label="Cambiar idioma" />
+        <span class="slider"></span>
+      </label>
+      <span class="lang-label">ES / EN</span>
     </div>
   </header>
 
@@ -43,11 +35,11 @@
       <div class="hero-inner">
         <div class="hero-title">
           <div class="identidad-container">
-            <!-- Renombrado sin espacios: identidad.png -->
+            <!-- El archivo tiene un espacio antes de .png -->
             <img
-              src="identidad.png?v=300"
+              src="identidad%20.png?v=200"
               class="identidad"
-              alt="Identidad Clean&Go! (cubo, aspiradora y fregona)"
+              alt="Identidad Clean&Go"
               loading="eager"
               decoding="async"
               fetchpriority="high"
@@ -140,8 +132,7 @@
     </section>
   </main>
 
-  <noscript>
-    <p style="padding:1rem;text-align:center">Activa JavaScript para ver las animaciones y el contenido dinámico.</p>
-  </noscript>
+  <script src="three-scene.js?v=200"></script>
+  <script src="main.js?v=200"></script>
 </body>
 </html>
