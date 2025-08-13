@@ -79,17 +79,17 @@ body{
   padding-top:120px;                /* deja espacio para el logo arriba */
 }
 
-/* ► Identidad sobre el título (más grande y un poco a la izquierda) */
+/* ► Identidad sobre el título (ahora un poco más arriba, más centrada y más grande) */
 .identidad-container{
   position:absolute;
-  top:18px;                         /* altura del logo respecto al hero */
-  left:24%;                         /* lo coloca a la izquierda del centro */
-  transform:translateX(-50%);       /* centra el propio bloque respecto a su punto */
-  z-index:2;                        /* por delante de burbujas */
+  top:6px;                          /* antes 18px → sube un poco */
+  left:30%;                         /* antes 24% → más hacia el centro del título */
+  transform:translateX(-50%);
+  z-index:2;
   pointer-events:none;
 }
 .identidad{
-  width:200px;                      /* tamaño del logo en desktop */
+  width:230px;                      /* antes 200px → ligeramente más grande */
   height:auto;
   object-fit:contain;
   pointer-events:none;
@@ -98,7 +98,7 @@ body{
 .hero h1{
   font-size:56px;
   color:var(--brand);
-  margin:8px 0 0;                   /* título debajo del logo */
+  margin:8px 0 0;
 }
 .hero p{
   font-size:20px; margin:10px 0 26px; color:#385a74;
@@ -150,8 +150,15 @@ body{
 @media (max-width:720px){
   .logo{ height:36px; }
   .hero-inner{ padding-top:100px; }
-  .identidad{ width:140px; }
-  .identidad-container{ top:10px; left:22%; }
+
+  .identidad{
+    width:160px;                    /* antes 140px → un poco más grande en móvil */
+  }
+  .identidad-container{
+    top:2px;                        /* un pelín más arriba en móvil */
+    left:28%;                       /* más centrada respecto al título en móvil */
+  }
+
   .hero h1{ font-size:36px; }
   .gallery img{ height:160px; }
 }
